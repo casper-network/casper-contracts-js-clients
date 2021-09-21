@@ -1,0 +1,20 @@
+{
+  "name": "casper-contracts",
+  "description": "casper-contracts-js-clients",
+  "private": true,
+  "devDependencies": {
+    "lerna": "^4.0.0"
+  },
+  "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "test": "npm run dist && lerna run test --stream",
+    "dist": "lerna run dist --include-dependencies"
+  },
+  "keywords": [],
+  "author": "Jan Hoffmann <jan@casperlabs.io>",
+  "license": "ISC",
+  "devDependencies": {
+    "lerna": "^4.0.0",
+    "typescript": "^4.4.3"
+  }
+}

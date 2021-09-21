@@ -1,0 +1,21 @@
+{
+  "name": "@casper-contracts/erc20-client",
+  "version": "1.0.0",
+  "description": "> TODO: description",
+  "author": "Jan Hoffmann <jan@hfmn.pl>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "registry": "http://localhost:4873/"
+  },
+  "scripts": {
+    "dist": "npm run clean && npm run build",
+    "clean": "rm -rf dist/",
+    "build": "tsc -p tsconfig.build.json",
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  }
+}
