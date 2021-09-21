@@ -141,37 +141,33 @@ export const parseEvent = (
     const { transforms } =
       value.body.DeployProcessed.execution_result.Success.effect;
 
-    const cep47Events = transforms.reduce((acc: any, val: any) => {
-      if (
-        val.key.startsWith("dictionary") &&
-        val.transform.hasOwnProperty("WriteCLValue") &&
-        val.transform.WriteCLValue.parsed === null
-      ) {
-        const byteArray = Buffer.from(val.transform.WriteCLValue.bytes, "hex");
-        const maybeCLOption = CLValueParsers.fromBytesWithType(byteArray);
-        const clOption = maybeCLOption.unwrap().value();
-        const clValue = clOption.some ? clOption.unwrap() : null;
-        if (clValue && clValue instanceof CLMap) {
-          const hash = clValue.get(
-            CLValueBuilder.string("contract_package_hash")
-          );
-          const id = clValue.get(CLValueBuilder.string("event_id"));
-          const event = clValue.get(CLValueBuilder.string("event_type"));
+        const cep47Events = transforms.reduce((acc: any, val: any) => {
           if (
-            id &&
-            getDictionaryKeyHash(eventsURef, id.value()) ===
-              val.key &&
-            hash &&
-            hash.value() === contractPackageHash &&
-            event &&
-            eventNames.includes(event.value())
+            val.transform.hasOwnProperty("WriteCLValue") &&
+            typeof val.transform.WriteCLValue.parsed === "object" &&
+            val.transform.WriteCLValue.parsed !== null
           ) {
-            acc = [...acc, { name: event.value(), clValue }];
+            const maybeCLValue = CLValueParsers.fromJSON(
+              val.transform.WriteCLValue
+            );
+            const clValue = maybeCLValue.unwrap();
+            if (clValue && clValue instanceof CLMap) {
+              const hash = clValue.get(
+                CLValueBuilder.string("contract_package_hash")
+              );
+              const event = clValue.get(CLValueBuilder.string("event_type"));
+              if (
+                hash &&
+                hash.value() === contractPackageHash &&
+                event &&
+                eventNames.includes(event.value())
+              ) {
+                acc = [...acc, { name: event.value(), clValue }];
+              }
+            }
           }
-        }
-      }
-      return acc;
-    }, []);
+          return acc;
+        }, []);
 
     return { error: null, success: !!cep47Events.length, data: cep47Events };
   }

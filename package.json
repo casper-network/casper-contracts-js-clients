@@ -3,18 +3,24 @@
   "description": "casper-contracts-js-clients",
   "private": true,
   "devDependencies": {
-    "lerna": "^4.0.0"
+    "dotenv": "^10.0.0",
+    "lerna": "^4.0.0",
+    "typescript": "^4.4.3"
   },
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "test": "npm run dist && lerna run test --stream",
-    "dist": "lerna run dist --include-dependencies"
+    "dist": "lerna run dist --include-dependencies",
+    "e2e:cep47:install": "ts-node ./e2e/cep47/install.ts",
+    "e2e:cep47:installed": "ts-node ./e2e/cep47/installed.ts"
   },
   "keywords": [],
   "author": "Jan Hoffmann <jan@casperlabs.io>",
   "license": "ISC",
-  "devDependencies": {
-    "lerna": "^4.0.0",
-    "typescript": "^4.4.3"
+  "dependencies": {
+    "casper-js-sdk": "^2.5.1",
+    "ts-node": "^10.2.1",
+    "@casper-contracts/client-helper": "file:./packages/client-helper",
+    "@casper-contracts/cep47-client": "file:./packages/cep47-client"
   }
 }
