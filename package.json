@@ -12,7 +12,9 @@
     "test": "npm run dist && lerna run test --stream",
     "dist": "lerna run dist --include-dependencies",
     "e2e:cep47:install": "ts-node ./e2e/cep47/install.ts",
-    "e2e:cep47:installed": "ts-node ./e2e/cep47/installed.ts"
+    "e2e:cep47:installed": "ts-node ./e2e/cep47/installed.ts",
+    "e2e:erc20:install": "ts-node ./e2e/erc20/install.ts",
+    "e2e:erc20:installed": "ts-node ./e2e/erc20/installed.ts"
   },
   "keywords": [],
   "author": "Jan Hoffmann <jan@casperlabs.io>",
@@ -21,6 +23,7 @@
     "casper-js-sdk": "^2.5.1",
     "ts-node": "^10.2.1",
     "@casper-contracts/client-helper": "file:./packages/client-helper",
-    "@casper-contracts/cep47-client": "file:./packages/cep47-client"
+    "@casper-contracts/cep47-client": "file:./packages/cep47-client",
+    "@casper-contracts/erc20-client": "file:./packages/erc20-client"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@casper-contracts/client-helper",
+  "name": "@casper-contracts/erc20-client",
   "version": "1.0.0",
   "description": "> TODO: description",
   "author": "Jan Hoffmann <jan@casperlabs.io>",
@@ -10,16 +10,14 @@
   "files": [
     "dist"
   ],
-  "publishConfig": {
-    "registry": "http://localhost:4873/"
+  "dependencies": {
+    "@casper-contracts/client-helper": "file:../client-helper",
+    "casper-js-sdk": "^2.5.1"
   },
   "scripts": {
     "dist": "npm run clean && npm run build",
     "clean": "rm -rf dist/",
     "build": "tsc -p tsconfig.build.json",
     "test": "echo \"Error: run tests from root\" && exit 1"
-  },
-  "dependencies": {
-    "casper-js-sdk": "^2.5.1"
   }
 }

@@ -2,7 +2,7 @@
   "name": "@casper-contracts/cep47-client",
   "version": "1.0.0",
   "description": "> TODO: description",
-  "author": "Jan Hoffmann <jan@hfmn.pl>",
+  "author": "Jan Hoffmann <jan@casperlabs.io>",
   "homepage": "",
   "license": "ISC",
   "main": "dist/index.js",

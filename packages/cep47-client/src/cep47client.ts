@@ -20,6 +20,7 @@ const {
   contractCallFn,
   createRecipientAddress
 } = helpers;
+// TODO: Refactor in both clients
 type RecipientType = types.RecipientType;
 type IPendingDeploy = types.IPendingDeploy;
 type IClassContractCallParams = types.IClassContractCallParams;
@@ -462,4 +463,3 @@ class CEP47Client extends CasperContractClient {
 
 
 export default CEP47Client;
-
