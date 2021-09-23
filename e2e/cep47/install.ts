@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-config();
+config({ path: ".env.cep47" });
 import { CEP47Client } from "casper-cep47-js-client";
 import { utils } from "casper-js-client-helper";
 import { parseTokenMeta, sleep, getDeploy } from "../utils";

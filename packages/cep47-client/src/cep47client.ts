@@ -1,4 +1,5 @@
 import {
+  CLValueParsers,
   CLPublicKey,
   CLTypeBuilder,
   CLValue,
@@ -8,9 +9,17 @@ import {
   RuntimeArgs,
 } from "casper-js-sdk";
 import { Some, None } from "ts-results";
-import { CasperContractClient, constants, utils, helpers, types } from "casper-js-client-helper";
+import {
+  CasperContractClient,
+  constants,
+  utils,
+  helpers,
+  types,
+} from "casper-js-client-helper";
 const { DEFAULT_TTL } = constants;
 import { CEP47Events } from "./constants";
+import { concat } from "@ethersproject/bytes";
+import blake from "blakejs";
 const {
   fromCLMap,
   toCLMap,
@@ -18,7 +27,7 @@ const {
   setClient,
   contractSimpleGetter,
   contractCallFn,
-  createRecipientAddress
+  createRecipientAddress,
 } = helpers;
 // TODO: Refactor in both clients
 type RecipientType = types.RecipientType;
@@ -29,7 +38,7 @@ class CEP47Client extends CasperContractClient {
   protected namedKeys?: {
     balances: string;
     metadata: string;
-    ownedTokens: string;
+    ownedTokensByIndex: string;
     owners: string;
     issuers: string;
     paused: string;
@@ -64,11 +73,11 @@ class CEP47Client extends CasperContractClient {
     const LIST_OF_NAMED_KEYS = [
       "balances",
       "metadata",
-      "owned_tokens",
+      "owned_tokens_by_index",
       "owners",
       "issuers",
       "paused",
-      "events"
+      "events",
     ];
 
     const { contractPackageHash, namedKeys } = await setClient(
@@ -83,19 +92,15 @@ class CEP47Client extends CasperContractClient {
   }
 
   public async name() {
-    return await contractSimpleGetter(
-      this.nodeAddress,
-      this.contractHash!,
-      ["name"]
-    );
+    return await contractSimpleGetter(this.nodeAddress, this.contractHash!, [
+      "name",
+    ]);
   }
 
   public async symbol() {
-    return await contractSimpleGetter(
-      this.nodeAddress,
-      this.contractHash!,
-      ["symbol"]
-    );
+    return await contractSimpleGetter(this.nodeAddress, this.contractHash!, [
+      "symbol",
+    ]);
   }
 
   public async meta() {
@@ -109,11 +114,9 @@ class CEP47Client extends CasperContractClient {
   }
 
   public async totalSupply() {
-    return await contractSimpleGetter(
-      this.nodeAddress,
-      this.contractHash!,
-      ["total_supply"]
-    );
+    return await contractSimpleGetter(this.nodeAddress, this.contractHash!, [
+      "total_supply",
+    ]);
   }
 
   public async balanceOf(account: CLPublicKey) {
@@ -193,26 +196,40 @@ class CEP47Client extends CasperContractClient {
   }
 
   public async getIssuerOf(tokenId: string) {
-     const result = await utils.contractDictionaryGetter(
-       this.nodeAddress,
-       tokenId,
-       this.namedKeys.issuers
-     );
-     const maybeValue = result.value().unwrap();
-     return `account-hash-${Buffer.from(maybeValue.value().value()).toString(
-       "hex"
-     )}`;
-   }
-
-  public async getTokensOf(account: CLPublicKey) {
-    const accountHash = Buffer.from(account.toAccountHash()).toString("hex");
     const result = await utils.contractDictionaryGetter(
       this.nodeAddress,
-      accountHash,
-      this.namedKeys!.ownedTokens
+      tokenId,
+      this.namedKeys.issuers
     );
     const maybeValue = result.unwrap();
-    return maybeValue.value();
+    return `account-hash-${Buffer.from(maybeValue.value().value()).toString(
+      "hex"
+    )}`;
+  }
+
+  public async getTokensOf(account: CLPublicKey) {
+    const accountKey = createRecipientAddress(account);
+    const accountBytes = CLValueParsers.toBytes(accountKey).unwrap();
+    const balanceOri = await this.balanceOf(account);
+    const balance = parseInt(balanceOri, 10);
+
+    let tokenIds: string[] = [];
+
+    for (let i = 0; i < balance; i++) {
+      const numBytes = CLValueParsers.toBytes(CLValueBuilder.u256(i)).unwrap();
+      const concated = concat([accountBytes, numBytes]);
+      const blaked = blake.blake2b(concated, undefined, 32);
+      const str = Buffer.from(blaked).toString("hex");
+      const result = await utils.contractDictionaryGetter(
+        this.nodeAddress,
+        str,
+        this.namedKeys.ownedTokensByIndex
+      );
+      const maybeValue = result.unwrap();
+      tokenIds = [...tokenIds, maybeValue.value()];
+    }
+
+    return tokenIds;
   }
 
   public async mintOne(
@@ -238,7 +255,8 @@ class CEP47Client extends CasperContractClient {
       paymentAmount,
       keys: keys,
       runtimeArgs,
-      cb: deployHash => this.addPendingDeploy(CEP47Events.MintOne, deployHash),
+      cb: (deployHash) =>
+        this.addPendingDeploy(CEP47Events.MintOne, deployHash),
       ttl,
     });
   }
@@ -270,7 +288,8 @@ class CEP47Client extends CasperContractClient {
       paymentAmount,
       keys: keys,
       runtimeArgs,
-      cb: deployHash => this.addPendingDeploy(CEP47Events.MintOne, deployHash),
+      cb: (deployHash) =>
+        this.addPendingDeploy(CEP47Events.MintOne, deployHash),
       ttl,
     });
   }
@@ -308,7 +327,8 @@ class CEP47Client extends CasperContractClient {
       paymentAmount,
       keys: keys,
       runtimeArgs,
-      cb: deployHash => this.addPendingDeploy(CEP47Events.MintOne, deployHash),
+      cb: (deployHash) =>
+        this.addPendingDeploy(CEP47Events.MintOne, deployHash),
       ttl,
     });
   }
@@ -330,7 +350,8 @@ class CEP47Client extends CasperContractClient {
       keys,
       paymentAmount,
       runtimeArgs,
-      cb: deployHash => this.addPendingDeploy(CEP47Events.MetadataUpdate, deployHash),
+      cb: (deployHash) =>
+        this.addPendingDeploy(CEP47Events.MetadataUpdate, deployHash),
       ttl,
     });
   }
@@ -352,7 +373,8 @@ class CEP47Client extends CasperContractClient {
       keys,
       paymentAmount,
       runtimeArgs,
-      cb: deployHash => this.addPendingDeploy(CEP47Events.BurnOne, deployHash),
+      cb: (deployHash) =>
+        this.addPendingDeploy(CEP47Events.BurnOne, deployHash),
       ttl,
     });
   }
@@ -375,7 +397,8 @@ class CEP47Client extends CasperContractClient {
       keys,
       paymentAmount,
       runtimeArgs,
-      cb: deployHash => this.addPendingDeploy(CEP47Events.BurnOne, deployHash),
+      cb: (deployHash) =>
+        this.addPendingDeploy(CEP47Events.BurnOne, deployHash),
       ttl,
     });
   }
@@ -397,7 +420,8 @@ class CEP47Client extends CasperContractClient {
       keys,
       paymentAmount,
       runtimeArgs,
-      cb: deployHash => this.addPendingDeploy(CEP47Events.TransferToken, deployHash),
+      cb: (deployHash) =>
+        this.addPendingDeploy(CEP47Events.TransferToken, deployHash),
       ttl,
     });
   }
@@ -420,7 +444,8 @@ class CEP47Client extends CasperContractClient {
       keys,
       paymentAmount,
       runtimeArgs,
-      cb: deployHash => this.addPendingDeploy(CEP47Events.TransferToken, deployHash),
+      cb: (deployHash) =>
+        this.addPendingDeploy(CEP47Events.TransferToken, deployHash),
       ttl,
     });
   }
@@ -440,7 +465,8 @@ class CEP47Client extends CasperContractClient {
       keys,
       paymentAmount,
       runtimeArgs,
-      cb: deployHash => this.addPendingDeploy(CEP47Events.TransferToken, deployHash),
+      cb: (deployHash) =>
+        this.addPendingDeploy(CEP47Events.TransferToken, deployHash),
       ttl,
     });
   }
@@ -460,6 +486,5 @@ class CEP47Client extends CasperContractClient {
     return this.handleEvents(eventNames, callback);
   }
 }
-
 
 export default CEP47Client;
