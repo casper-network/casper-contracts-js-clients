@@ -10,9 +10,6 @@
   "files": [
     "dist"
   ],
-  "publishConfig": {
-    "registry": "http://localhost:4873/"
-  },
   "scripts": {
     "dist": "npm run clean && npm run build",
     "clean": "rm -rf dist/",

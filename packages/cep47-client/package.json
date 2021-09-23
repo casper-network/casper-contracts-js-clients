@@ -10,9 +10,6 @@
   "files": [
     "dist"
   ],
-  "publishConfig": {
-    "registry": "http://localhost:4873/"
-  },
   "dependencies": {
     "@casper-contracts/client-helper": "file:../client-helper",
     "casper-js-sdk": "^2.5.1"
