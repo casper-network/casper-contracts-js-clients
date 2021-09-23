@@ -23,8 +23,8 @@
   "dependencies": {
     "casper-js-sdk": "^2.5.1",
     "ts-node": "^10.2.1",
-    "@casper-contracts/client-helper": "file:./packages/client-helper",
-    "@casper-contracts/cep47-client": "file:./packages/cep47-client",
-    "@casper-contracts/erc20-client": "file:./packages/erc20-client"
+    "casper-js-client-helper": "file:./packages/client-helper",
+    "casper-cep47-js-client": "file:./packages/cep47-client",
+    "casper-erc20-js-client": "file:./packages/erc20-client"
   }
 }

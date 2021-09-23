@@ -1,5 +1,5 @@
 {
-  "name": "@casper-contracts/erc20-client",
+  "name": "casper-erc20-js-client",
   "version": "0.0.1",
   "description": "> TODO: description",
   "author": "Jan Hoffmann <jan@casperlabs.io>",
@@ -11,7 +11,7 @@
     "dist"
   ],
   "dependencies": {
-    "@casper-contracts/client-helper": "file:../client-helper",
+    "casper-js-client-helper": "file:../client-helper",
     "casper-js-sdk": "^2.5.1"
   },
   "publishConfig": {

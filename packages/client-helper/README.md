@@ -1,1 +1,1 @@
-# `@casper-contracts/client-helper`
+# `casper-js-client-helper`

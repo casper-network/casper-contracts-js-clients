@@ -19,7 +19,7 @@ import {
 import { Some, None } from "ts-results";
 import * as blake from "blakejs";
 import { concat } from "@ethersproject/bytes";
-import { CasperContractClient, constants, utils, helpers, types } from "@casper-contracts/client-helper";
+import { CasperContractClient, constants, utils, helpers, types } from "casper-js-client-helper";
 import { ERC20Events } from "./constants";
 const { DEFAULT_TTL } = constants;
 // TODO: Refactor in both clients

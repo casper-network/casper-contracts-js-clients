@@ -1,8 +1,8 @@
 import { config } from "dotenv";
 config({ path: "./.env.erc20" });
 
-import { ERC20Client } from "@casper-contracts/erc20-client";
-import { utils } from "@casper-contracts/client-helper";
+import { ERC20Client } from "casper-erc20-js-client";
+import { utils } from "casper-js-client-helper";
 import { sleep, getDeploy } from "../utils";
 
 import {

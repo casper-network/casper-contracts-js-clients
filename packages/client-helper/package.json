@@ -1,5 +1,5 @@
 {
-  "name": "@casper-contracts/client-helper",
+  "name": "casper-js-client-helper",
   "version": "0.0.1",
   "description": "> TODO: description",
   "author": "Jan Hoffmann <jan@casperlabs.io>",

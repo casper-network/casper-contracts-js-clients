@@ -1,1 +1,1 @@
-# `@casper-contracts/erc20-client`
+# `casper-erc20-js-client`

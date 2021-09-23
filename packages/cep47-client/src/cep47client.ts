@@ -8,7 +8,7 @@ import {
   RuntimeArgs,
 } from "casper-js-sdk";
 import { Some, None } from "ts-results";
-import { CasperContractClient, constants, utils, helpers, types } from "@casper-contracts/client-helper";
+import { CasperContractClient, constants, utils, helpers, types } from "casper-js-client-helper";
 const { DEFAULT_TTL } = constants;
 import { CEP47Events } from "./constants";
 const {

@@ -1,5 +1,5 @@
 {
-  "name": "@casper-contracts/cep47-client",
+  "name": "casper-cep47-js-client",
   "version": "0.0.1",
   "description": "> TODO: description",
   "author": "Jan Hoffmann <jan@casperlabs.io>",
@@ -14,7 +14,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@casper-contracts/client-helper": "file:../client-helper",
+    "casper-js-client-helper": "file:../client-helper",
     "casper-js-sdk": "^2.5.1"
   },
   "scripts": {
