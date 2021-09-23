@@ -18,8 +18,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        all_commits: true
-        all_tags: true
+        - fetch-depth: 0
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
