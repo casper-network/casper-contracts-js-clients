@@ -10,6 +10,9 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dist": "npm run clean && npm run build",
     "clean": "rm -rf dist/",

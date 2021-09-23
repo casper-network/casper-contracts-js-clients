@@ -14,6 +14,9 @@
     "@casper-contracts/client-helper": "file:../client-helper",
     "casper-js-sdk": "^2.5.1"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dist": "npm run clean && npm run build",
     "clean": "rm -rf dist/",
