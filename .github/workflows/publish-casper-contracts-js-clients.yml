@@ -1,0 +1,31 @@
+name: publish-casper-contracts-js-clients
+
+on:
+  push:
+    branches: [ master ]
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  publish:
+    runs-on: ubuntu-18.04
+
+    strategy:
+      matrix:
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [14.x]
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        all_commits: true
+        all_tags: true
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
+      env:
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    - run: npm install
+    - run: lerna publish from-git --yes
