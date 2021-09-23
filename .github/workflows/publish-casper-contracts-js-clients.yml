@@ -28,4 +28,5 @@ jobs:
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     - run: npm install
-    - run: lerna publish from-git --yes
+    - run: npm run dist
+    - run: npm run publish:ci
