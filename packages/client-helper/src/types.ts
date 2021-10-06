@@ -14,15 +14,17 @@ export interface IClassContractCallParams {
   paymentAmount: string;
   cb?: (deployHash: string) => void;
   ttl: number;
+  dependencies?: string[];
 }
 
 export interface IContractCallParams {
   nodeAddress: string;
   keys: Keys.AsymmetricKey;
   chainName: string;
+  contractHash: string;
   entryPoint: string;
   runtimeArgs: RuntimeArgs;
   paymentAmount: string;
-  contractHash: string;
   ttl: number;
+  dependencies?: string[];
 }
