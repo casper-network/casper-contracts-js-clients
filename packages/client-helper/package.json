@@ -1,6 +1,6 @@
 {
   "name": "casper-js-client-helper",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "> TODO: description",
   "author": "Jan Hoffmann <jan@casperlabs.io>",
   "homepage": "",
@@ -20,6 +20,6 @@
     "test": "echo \"add tests\" && exit 0"
   },
   "dependencies": {
-    "casper-js-sdk": "^2.5.2"
+    "casper-js-sdk": "^2.6.0"
   }
 }

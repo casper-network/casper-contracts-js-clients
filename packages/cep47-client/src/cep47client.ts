@@ -160,7 +160,8 @@ class CEP47Client extends CasperContractClient {
   public async pause(
     keys: Keys.AsymmetricKey,
     paymentAmount: string,
-    ttl = DEFAULT_TTL
+    ttl = DEFAULT_TTL,
+    dependencies = []
   ) {
     const runtimeArgs = RuntimeArgs.fromMap({});
 
@@ -170,13 +171,15 @@ class CEP47Client extends CasperContractClient {
       keys: keys,
       runtimeArgs,
       ttl,
+      dependencies
     });
   }
 
   public async unpause(
     keys: Keys.AsymmetricKey,
     paymentAmount: string,
-    ttl = DEFAULT_TTL
+    ttl = DEFAULT_TTL,
+    dependencies = []
   ) {
     const runtimeArgs = RuntimeArgs.fromMap({});
 
@@ -186,6 +189,7 @@ class CEP47Client extends CasperContractClient {
       keys: keys,
       runtimeArgs,
       ttl,
+      dependencies
     });
   }
 
@@ -241,7 +245,8 @@ class CEP47Client extends CasperContractClient {
     id: string | null,
     meta: Map<string, string>,
     paymentAmount: string,
-    ttl = DEFAULT_TTL
+    ttl = DEFAULT_TTL,
+    dependencies = []
   ) {
     const tokenId = id
       ? CLValueBuilder.option(Some(CLValueBuilder.string(id)))
@@ -261,6 +266,7 @@ class CEP47Client extends CasperContractClient {
       cb: (deployHash) =>
         this.addPendingDeploy(CEP47Events.MintOne, deployHash),
       ttl,
+      dependencies
     });
   }
 
@@ -271,7 +277,8 @@ class CEP47Client extends CasperContractClient {
     ids: string[] | null,
     count: number,
     paymentAmount: string,
-    ttl = DEFAULT_TTL
+    ttl = DEFAULT_TTL,
+    dependencies = []
   ) {
     const tokenIds = ids
       ? CLValueBuilder.option(
@@ -294,6 +301,7 @@ class CEP47Client extends CasperContractClient {
       cb: (deployHash) =>
         this.addPendingDeploy(CEP47Events.MintOne, deployHash),
       ttl,
+      dependencies
     });
   }
 
@@ -303,7 +311,8 @@ class CEP47Client extends CasperContractClient {
     meta: Array<Map<string, string>>,
     ids: string[] | null,
     paymentAmount: string,
-    ttl = DEFAULT_TTL
+    ttl = DEFAULT_TTL,
+    dependencies = []
   ) {
     if (ids && ids.length !== meta.length) {
       throw new Error(
@@ -333,6 +342,7 @@ class CEP47Client extends CasperContractClient {
       cb: (deployHash) =>
         this.addPendingDeploy(CEP47Events.MintOne, deployHash),
       ttl,
+      dependencies
     });
   }
 
@@ -341,7 +351,8 @@ class CEP47Client extends CasperContractClient {
     tokenId: string,
     meta: Map<string, string>,
     paymentAmount: string,
-    ttl = DEFAULT_TTL
+    ttl = DEFAULT_TTL,
+    dependencies = []
   ) {
     const runtimeArgs = RuntimeArgs.fromMap({
       token_id: CLValueBuilder.string(tokenId),
@@ -356,6 +367,7 @@ class CEP47Client extends CasperContractClient {
       cb: (deployHash) =>
         this.addPendingDeploy(CEP47Events.MetadataUpdate, deployHash),
       ttl,
+      dependencies
     });
   }
 
@@ -364,7 +376,8 @@ class CEP47Client extends CasperContractClient {
     owner: RecipientType,
     tokenId: string,
     paymentAmount: string,
-    ttl = DEFAULT_TTL
+    ttl = DEFAULT_TTL,
+    dependencies = []
   ) {
     const runtimeArgs = RuntimeArgs.fromMap({
       owner: createRecipientAddress(owner),
@@ -379,6 +392,7 @@ class CEP47Client extends CasperContractClient {
       cb: (deployHash) =>
         this.addPendingDeploy(CEP47Events.BurnOne, deployHash),
       ttl,
+      dependencies
     });
   }
 
@@ -387,7 +401,8 @@ class CEP47Client extends CasperContractClient {
     owner: RecipientType,
     tokenIds: string[],
     paymentAmount: string,
-    ttl = DEFAULT_TTL
+    ttl = DEFAULT_TTL,
+    dependencies = []
   ) {
     const clTokenIds = tokenIds.map(CLValueBuilder.string);
     const runtimeArgs = RuntimeArgs.fromMap({
@@ -403,6 +418,7 @@ class CEP47Client extends CasperContractClient {
       cb: (deployHash) =>
         this.addPendingDeploy(CEP47Events.BurnOne, deployHash),
       ttl,
+      dependencies
     });
   }
 
@@ -411,7 +427,8 @@ class CEP47Client extends CasperContractClient {
     recipient: RecipientType,
     tokenId: string,
     paymentAmount: string,
-    ttl = DEFAULT_TTL
+    ttl = DEFAULT_TTL,
+    dependencies = []
   ) {
     const runtimeArgs = RuntimeArgs.fromMap({
       recipient: createRecipientAddress(recipient),
@@ -426,6 +443,7 @@ class CEP47Client extends CasperContractClient {
       cb: (deployHash) =>
         this.addPendingDeploy(CEP47Events.TransferToken, deployHash),
       ttl,
+      dependencies
     });
   }
 
@@ -434,7 +452,8 @@ class CEP47Client extends CasperContractClient {
     recipient: RecipientType,
     tokenIds: string[],
     paymentAmount: string,
-    ttl = DEFAULT_TTL
+    ttl = DEFAULT_TTL,
+    dependencies = []
   ) {
     const clTokenIds = tokenIds.map(CLValueBuilder.string);
     const runtimeArgs = RuntimeArgs.fromMap({
@@ -450,6 +469,7 @@ class CEP47Client extends CasperContractClient {
       cb: (deployHash) =>
         this.addPendingDeploy(CEP47Events.TransferToken, deployHash),
       ttl,
+      dependencies
     });
   }
 
@@ -457,7 +477,8 @@ class CEP47Client extends CasperContractClient {
     keys: Keys.AsymmetricKey,
     recipient: RecipientType,
     paymentAmount: string,
-    ttl = DEFAULT_TTL
+    ttl = DEFAULT_TTL,
+    dependencies = []
   ) {
     const runtimeArgs = RuntimeArgs.fromMap({
       recipient: createRecipientAddress(recipient),
@@ -471,6 +492,7 @@ class CEP47Client extends CasperContractClient {
       cb: (deployHash) =>
         this.addPendingDeploy(CEP47Events.TransferToken, deployHash),
       ttl,
+      dependencies
     });
   }
 
