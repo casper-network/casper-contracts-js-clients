@@ -124,12 +124,13 @@ export const contractCallFn = async ({
   runtimeArgs,
   paymentAmount,
   ttl,
+  dependencies = []
 }: IContractCallParams) => {
   const client = new CasperClient(nodeAddress);
   const contractHashAsByteArray = utils.contractHashToByteArray(contractHash);
 
   let deploy = DeployUtil.makeDeploy(
-    new DeployUtil.DeployParams(keys.publicKey, chainName, 1, ttl),
+    new DeployUtil.DeployParams(keys.publicKey, chainName, 1, ttl, dependencies),
     DeployUtil.ExecutableDeployItem.newStoredContractByHash(
       contractHashAsByteArray,
       entryPoint,

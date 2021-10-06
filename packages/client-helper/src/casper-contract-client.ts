@@ -47,7 +47,8 @@ class ContractClient {
     entryPoint,
     runtimeArgs,
     cb,
-    ttl = DEFAULT_TTL
+    ttl = DEFAULT_TTL,
+    dependencies = []
   }: IClassContractCallParams) {
     const deployHash = await contractCallFn({
       chainName: this.chainName,
@@ -58,6 +59,7 @@ class ContractClient {
       keys: keys,
       runtimeArgs,
       ttl,
+      dependencies
     });
 
     if (deployHash !== null) {
