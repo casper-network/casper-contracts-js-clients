@@ -12,7 +12,7 @@
   ],
   "dependencies": {
     "casper-js-client-helper": "file:../client-helper",
-    "casper-js-sdk": "^2.5.2"
+    "casper-js-sdk": "^2.6.0"
   },
   "publishConfig": {
     "access": "public"
