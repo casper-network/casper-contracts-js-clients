@@ -54,6 +54,7 @@ const test = async () => {
   );
 
   console.log(`... Contract Hash: ${contractHash}`);
+  console.log(contractHash);
 
   // We don't need hash- prefix so i'm removing it
   await erc20.setContractHash(contractHash.slice(5));
