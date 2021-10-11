@@ -1,0 +1,371 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<ul>
+<li><a href="#casper-erc20-js-client"><code>casper-erc20-js-client</code></a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#classes">Classes</a></li>
+<li><a href="#class-erc20client">Class: ERC20Client</a><ul>
+<li><a href="#hierarchy">Hierarchy</a></li>
+<li><a href="#table-of-contents">Table of contents</a></li>
+<li><a href="#constructors">Constructors</a></li>
+<li><a href="#properties">Properties</a></li>
+<li><a href="#methods">Methods</a></li></ul></li>
+<li><a href="#enums">Enums</a></li>
+<li><a href="#enumeration-erc20events">Enumeration: ERC20Events</a><ul>
+<li><a href="#table-of-contents-1">Table of contents</a></li>
+<li><a href="#enumeration-members">Enumeration members</a></li></ul></li>
+<li><a href="#casper-erc20-js-client">casper-erc20-js-client</a></li>
+<li><a href="#table-of-contents-2">Table of contents</a><ul>
+<li><a href="#namespaces">Namespaces</a></li>
+<li><a href="#classes-1">Classes</a></li></ul></li>
+<li><a href="#modules">Modules</a></li>
+<li><a href="#namespace-constants">Namespace: constants</a><ul>
+<li><a href="#table-of-contents-3">Table of contents</a></li></ul></li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+<p><a name="readmemd"></a></p>
+<p>casper-erc20-js-client / <a href="#modulesmd">Exports</a></p>
+<h1 id="caspererc20jsclient"><code>casper-erc20-js-client</code></h1>
+<h2 id="installation">Installation</h2>
+<p><code>npm i casper-erc20-js-client</code></p>
+<h1 id="classes">Classes</h1>
+<p><a name="classeserc20clientmd"></a></p>
+<p><a href="#readmemd">casper-erc20-js-client</a> / <a href="#modulesmd">Exports</a> / ERC20Client</p>
+<h2 id="classerc20client">Class: ERC20Client</h2>
+<h3 id="hierarchy">Hierarchy</h3>
+<ul>
+<li><p><code>CasperContractClient</code></p>
+<p>↳ <strong><code>ERC20Client</code></strong></p></li>
+</ul>
+<h3 id="tableofcontents">Table of contents</h3>
+<h4 id="constructors">Constructors</h4>
+<ul>
+<li><a href="#constructor">constructor</a></li>
+</ul>
+<h4 id="properties">Properties</h4>
+<ul>
+<li><a href="#chainname">chainName</a></li>
+<li><a href="#contracthash">contractHash</a></li>
+<li><a href="#contractpackagehash">contractPackageHash</a></li>
+<li><a href="#eventstreamaddress">eventStreamAddress</a></li>
+<li><a href="#islistening">isListening</a></li>
+<li><a href="#namedkeys">namedKeys</a></li>
+<li><a href="#nodeaddress">nodeAddress</a></li>
+<li><a href="#pendingdeploys">pendingDeploys</a></li>
+</ul>
+<h4 id="methods">Methods</h4>
+<ul>
+<li><a href="#addpendingdeploy">addPendingDeploy</a></li>
+<li><a href="#allowances">allowances</a></li>
+<li><a href="#approve">approve</a></li>
+<li><a href="#balanceof">balanceOf</a></li>
+<li><a href="#contractcall">contractCall</a></li>
+<li><a href="#decimals">decimals</a></li>
+<li><a href="#handleevents">handleEvents</a></li>
+<li><a href="#install">install</a></li>
+<li><a href="#name">name</a></li>
+<li><a href="#setcontracthash">setContractHash</a></li>
+<li><a href="#symbol">symbol</a></li>
+<li><a href="#totalsupply">totalSupply</a></li>
+<li><a href="#transfer">transfer</a></li>
+<li><a href="#transferfrom">transferFrom</a></li>
+</ul>
+<h3 id="constructors-1">Constructors</h3>
+<h4 id="constructor-NaN">constructor</h4>
+<p>• <strong>new ERC20Client</strong>(<code>nodeAddress</code>, <code>chainName</code>, <code>eventStreamAddress?</code>)</p>
+<h5 id="parameters">Parameters</h5>
+<p>| Name | Type |
+| :------ | :------ |
+| <code>nodeAddress</code> | <code>string</code> |
+| <code>chainName</code> | <code>string</code> |
+| <code>eventStreamAddress?</code> | <code>string</code> |</p>
+<h5 id="inheritedfrom">Inherited from</h5>
+<p>CasperContractClient.constructor</p>
+<h5 id="definedin">Defined in</h5>
+<p>client-helper/dist/casper-contract-client.d.ts:11</p>
+<h3 id="properties-1">Properties</h3>
+<h4 id="chainname">chainName</h4>
+<p>• <strong>chainName</strong>: <code>string</code></p>
+<h5 id="inheritedfrom-1">Inherited from</h5>
+<p>CasperContractClient.chainName</p>
+<h5 id="definedin-1">Defined in</h5>
+<p>client-helper/dist/casper-contract-client.d.ts:4</p>
+<hr />
+<h4 id="contracthash">contractHash</h4>
+<p>• <code>Optional</code> <strong>contractHash</strong>: <code>string</code></p>
+<h5 id="inheritedfrom-2">Inherited from</h5>
+<p>CasperContractClient.contractHash</p>
+<h5 id="definedin-2">Defined in</h5>
+<p>client-helper/dist/casper-contract-client.d.ts:6</p>
+<hr />
+<h4 id="contractpackagehash">contractPackageHash</h4>
+<p>• <code>Optional</code> <strong>contractPackageHash</strong>: <code>string</code></p>
+<h5 id="inheritedfrom-3">Inherited from</h5>
+<p>CasperContractClient.contractPackageHash</p>
+<h5 id="definedin-3">Defined in</h5>
+<p>client-helper/dist/casper-contract-client.d.ts:7</p>
+<hr />
+<h4 id="eventstreamaddress">eventStreamAddress</h4>
+<p>• <code>Optional</code> <strong>eventStreamAddress</strong>: <code>string</code></p>
+<h5 id="inheritedfrom-4">Inherited from</h5>
+<p>CasperContractClient.eventStreamAddress</p>
+<h5 id="definedin-4">Defined in</h5>
+<p>client-helper/dist/casper-contract-client.d.ts:5</p>
+<hr />
+<h4 id="islistening">isListening</h4>
+<p>• <code>Protected</code> <strong>isListening</strong>: <code>boolean</code></p>
+<h5 id="inheritedfrom-5">Inherited from</h5>
+<p>CasperContractClient.isListening</p>
+<h5 id="definedin-5">Defined in</h5>
+<p>client-helper/dist/casper-contract-client.d.ts:9</p>
+<hr />
+<h4 id="namedkeys">namedKeys</h4>
+<p>• <code>Protected</code> <code>Optional</code> <strong>namedKeys</strong>: <code>Object</code></p>
+<h5 id="typedeclaration">Type declaration</h5>
+<p>| Name | Type |
+| :------ | :------ |
+| <code>allowances</code> | <code>string</code> |
+| <code>balances</code> | <code>string</code> |</p>
+<h5 id="overrides">Overrides</h5>
+<p>CasperContractClient.namedKeys</p>
+<h5 id="definedin-6">Defined in</h5>
+<p><a href="https://github.com/casper-network/casper-contracts-js-clients/blob/c766d1b/packages/erc20-client/src/erc20client.ts#L41">erc20-client/src/erc20client.ts:41</a></p>
+<hr />
+<h4 id="nodeaddress">nodeAddress</h4>
+<p>• <strong>nodeAddress</strong>: <code>string</code></p>
+<h5 id="inheritedfrom-6">Inherited from</h5>
+<p>CasperContractClient.nodeAddress</p>
+<h5 id="definedin-7">Defined in</h5>
+<p>client-helper/dist/casper-contract-client.d.ts:3</p>
+<hr />
+<h4 id="pendingdeploys">pendingDeploys</h4>
+<p>• <code>Protected</code> <strong>pendingDeploys</strong>: <code>IPendingDeploy</code>[]</p>
+<h5 id="inheritedfrom-7">Inherited from</h5>
+<p>CasperContractClient.pendingDeploys</p>
+<h5 id="definedin-8">Defined in</h5>
+<p>client-helper/dist/casper-contract-client.d.ts:10</p>
+<h3 id="methods-1">Methods</h3>
+<h4 id="addpendingdeploy">addPendingDeploy</h4>
+<p>▸ <code>Protected</code> <strong>addPendingDeploy</strong>(<code>deployType</code>, <code>deployHash</code>): <code>void</code></p>
+<h5 id="parameters-1">Parameters</h5>
+<p>| Name | Type |
+| :------ | :------ |
+| <code>deployType</code> | <code>any</code> |
+| <code>deployHash</code> | <code>string</code> |</p>
+<h5 id="returns">Returns</h5>
+<p><code>void</code></p>
+<h5 id="inheritedfrom-8">Inherited from</h5>
+<p>CasperContractClient.addPendingDeploy</p>
+<h5 id="definedin-9">Defined in</h5>
+<p>client-helper/dist/casper-contract-client.d.ts:13</p>
+<hr />
+<h4 id="allowances">allowances</h4>
+<p>▸ <strong>allowances</strong>(<code>owner</code>, <code>spender</code>): <code>Promise</code>&lt;<code>any</code>></p>
+<p>Returns the amount of owner’s tokens allowed to be spent by spender.</p>
+<h5 id="parameters-2">Parameters</h5>
+<p>| Name | Type | Description |
+| :------ | :------ | :------ |
+| <code>owner</code> | <code>RecipientType</code> | Owner address (it supports CLPublicKey, CLAccountHash and CLByteArray). |
+| <code>spender</code> | <code>RecipientType</code> | Spender address (it supports CLPublicKey, CLAccountHash and CLByteArray). |</p>
+<h5 id="returns-1">Returns</h5>
+<p><code>Promise</code>&lt;<code>any</code>></p>
+<p>Amount in tokens.</p>
+<h5 id="definedin-10">Defined in</h5>
+<p><a href="https://github.com/casper-network/casper-contracts-js-clients/blob/c766d1b/packages/erc20-client/src/erc20client.ts#L282">erc20-client/src/erc20client.ts:282</a></p>
+<hr />
+<h4 id="approve">approve</h4>
+<p>▸ <strong>approve</strong>(<code>keys</code>, <code>spender</code>, <code>approveAmount</code>, <code>paymentAmount</code>, <code>ttl?</code>): <code>Promise</code>&lt;<code>string</code>></p>
+<p>Allows a spender to transfer up to an amount of the direct caller’s tokens.</p>
+<h5 id="parameters-3">Parameters</h5>
+<p>| Name | Type | Description |
+| :------ | :------ | :------ |
+| <code>keys</code> | <code>AsymmetricKey</code> | AsymmetricKey that will be used to sign the transaction. |
+| <code>spender</code> | <code>RecipientType</code> | Spender address (it supports CLPublicKey, CLAccountHash and CLByteArray). |
+| <code>approveAmount</code> | <code>string</code> | The amount of tokens that will be allowed to transfer. |
+| <code>paymentAmount</code> | <code>string</code> | Amount that will be used to pay the transaction. |
+| <code>ttl</code> | <code>number</code> | Time to live in miliseconds after which transaction will be expired (defaults to 30m). |</p>
+<h5 id="returns-2">Returns</h5>
+<p><code>Promise</code>&lt;<code>string</code>></p>
+<p>Deploy hash.</p>
+<h5 id="definedin-11">Defined in</h5>
+<p><a href="https://github.com/casper-network/casper-contracts-js-clients/blob/c766d1b/packages/erc20-client/src/erc20client.ts#L232">erc20-client/src/erc20client.ts:232</a></p>
+<hr />
+<h4 id="balanceof">balanceOf</h4>
+<p>▸ <strong>balanceOf</strong>(<code>account</code>): <code>Promise</code>&lt;<code>any</code>></p>
+<p>Returns the balance of the account address.</p>
+<h5 id="parameters-4">Parameters</h5>
+<p>| Name | Type | Description |
+| :------ | :------ | :------ |
+| <code>account</code> | <code>RecipientType</code> | Account address (it supports CLPublicKey, CLAccountHash and CLByteArray). |</p>
+<h5 id="returns-3">Returns</h5>
+<p><code>Promise</code>&lt;<code>any</code>></p>
+<p>Balance of an account.</p>
+<h5 id="definedin-12">Defined in</h5>
+<p><a href="https://github.com/casper-network/casper-contracts-js-clients/blob/c766d1b/packages/erc20-client/src/erc20client.ts#L261">erc20-client/src/erc20client.ts:261</a></p>
+<hr />
+<h4 id="contractcall">contractCall</h4>
+<p>▸ <strong>contractCall</strong>(<code>__namedParameters</code>): <code>Promise</code>&lt;<code>string</code>></p>
+<h5 id="parameters-5">Parameters</h5>
+<p>| Name | Type |
+| :------ | :------ |
+| <code>__namedParameters</code> | <code>IClassContractCallParams</code> |</p>
+<h5 id="returns-4">Returns</h5>
+<p><code>Promise</code>&lt;<code>string</code>></p>
+<h5 id="inheritedfrom-9">Inherited from</h5>
+<p>CasperContractClient.contractCall</p>
+<h5 id="definedin-13">Defined in</h5>
+<p>client-helper/dist/casper-contract-client.d.ts:12</p>
+<hr />
+<h4 id="decimals">decimals</h4>
+<p>▸ <strong>decimals</strong>(): <code>Promise</code>&lt;<code>any</code>></p>
+<p>Returns the decimals of the ERC20 token.</p>
+<h5 id="returns-5">Returns</h5>
+<p><code>Promise</code>&lt;<code>any</code>></p>
+<h5 id="definedin-14">Defined in</h5>
+<p><a href="https://github.com/casper-network/casper-contracts-js-clients/blob/c766d1b/packages/erc20-client/src/erc20client.ts#L132">erc20-client/src/erc20client.ts:132</a></p>
+<hr />
+<h4 id="handleevents">handleEvents</h4>
+<p>▸ <strong>handleEvents</strong>(<code>eventNames</code>, <code>callback</code>): <code>any</code></p>
+<h5 id="parameters-6">Parameters</h5>
+<p>| Name | Type |
+| :------ | :------ |
+| <code>eventNames</code> | <code>any</code>[] |
+| <code>callback</code> | (<code>eventName</code>: <code>any</code>, <code>deployStatus</code>: { <code>deployHash</code>: <code>string</code> ; <code>error</code>: <code>string</code> ; <code>success</code>: <code>boolean</code>  }, <code>result</code>: <code>any</code>) =&gt; <code>void</code> |</p>
+<h5 id="returns-6">Returns</h5>
+<p><code>any</code></p>
+<h5 id="inheritedfrom-10">Inherited from</h5>
+<p>CasperContractClient.handleEvents</p>
+<h5 id="definedin-15">Defined in</h5>
+<p>client-helper/dist/casper-contract-client.d.ts:14</p>
+<hr />
+<h4 id="install">install</h4>
+<p>▸ <strong>install</strong>(<code>keys</code>, <code>tokenName</code>, <code>tokenSymbol</code>, <code>tokenDecimals</code>, <code>tokenTotalSupply</code>, <code>paymentAmount</code>, <code>wasmPath</code>): <code>Promise</code>&lt;<code>string</code>></p>
+<p>Installs the ERC20 contract.</p>
+<h5 id="parameters-7">Parameters</h5>
+<p>| Name | Type | Description |
+| :------ | :------ | :------ |
+| <code>keys</code> | <code>AsymmetricKey</code> | AsymmetricKey that will be used to install the contract. |
+| <code>tokenName</code> | <code>string</code> | Name of the ERC20 token. |
+| <code>tokenSymbol</code> | <code>string</code> | Symbol of the ERC20 token. |
+| <code>tokenDecimals</code> | <code>string</code> | Specifies how many decimal places token will have. |
+| <code>tokenTotalSupply</code> | <code>string</code> | Specifies the amount of tokens in existance. |
+| <code>paymentAmount</code> | <code>string</code> | The payment amount that will be used to install the contract. |
+| <code>wasmPath</code> | <code>string</code> | Path to the WASM file that will be installed. |</p>
+<h5 id="returns-7">Returns</h5>
+<p><code>Promise</code>&lt;<code>string</code>></p>
+<p>Installation deploy hash.</p>
+<h5 id="definedin-16">Defined in</h5>
+<p><a href="https://github.com/casper-network/casper-contracts-js-clients/blob/c766d1b/packages/erc20-client/src/erc20client.ts#L60">erc20-client/src/erc20client.ts:60</a></p>
+<hr />
+<h4 id="name">name</h4>
+<p>▸ <strong>name</strong>(): <code>Promise</code>&lt;<code>any</code>></p>
+<p>Returns the name of the ERC20 token.</p>
+<h5 id="returns-8">Returns</h5>
+<p><code>Promise</code>&lt;<code>any</code>></p>
+<h5 id="definedin-17">Defined in</h5>
+<p><a href="https://github.com/casper-network/casper-contracts-js-clients/blob/c766d1b/packages/erc20-client/src/erc20client.ts#L110">erc20-client/src/erc20client.ts:110</a></p>
+<hr />
+<h4 id="setcontracthash">setContractHash</h4>
+<p>▸ <strong>setContractHash</strong>(<code>hash</code>): <code>Promise</code>&lt;<code>void</code>></p>
+<p>Set ERC20 contract hash so its possible to communicate with it.</p>
+<h5 id="parameters-8">Parameters</h5>
+<p>| Name | Type | Description |
+| :------ | :------ | :------ |
+| <code>hash</code> | <code>string</code> | Contract hash (raw hex string as well as <code>hash-</code> prefixed format is supported). |</p>
+<h5 id="returns-9">Returns</h5>
+<p><code>Promise</code>&lt;<code>void</code>></p>
+<h5 id="definedin-18">Defined in</h5>
+<p><a href="https://github.com/casper-network/casper-contracts-js-clients/blob/c766d1b/packages/erc20-client/src/erc20client.ts#L91">erc20-client/src/erc20client.ts:91</a></p>
+<hr />
+<h4 id="symbol">symbol</h4>
+<p>▸ <strong>symbol</strong>(): <code>Promise</code>&lt;<code>any</code>></p>
+<p>Returns the symbol of the ERC20 token.</p>
+<h5 id="returns-10">Returns</h5>
+<p><code>Promise</code>&lt;<code>any</code>></p>
+<h5 id="definedin-19">Defined in</h5>
+<p><a href="https://github.com/casper-network/casper-contracts-js-clients/blob/c766d1b/packages/erc20-client/src/erc20client.ts#L121">erc20-client/src/erc20client.ts:121</a></p>
+<hr />
+<h4 id="totalsupply">totalSupply</h4>
+<p>▸ <strong>totalSupply</strong>(): <code>Promise</code>&lt;<code>any</code>></p>
+<p>Returns the total supply of the ERC20 token.</p>
+<h5 id="returns-11">Returns</h5>
+<p><code>Promise</code>&lt;<code>any</code>></p>
+<h5 id="definedin-20">Defined in</h5>
+<p><a href="https://github.com/casper-network/casper-contracts-js-clients/blob/c766d1b/packages/erc20-client/src/erc20client.ts#L143">erc20-client/src/erc20client.ts:143</a></p>
+<hr />
+<h4 id="transfer">transfer</h4>
+<p>▸ <strong>transfer</strong>(<code>keys</code>, <code>recipient</code>, <code>transferAmount</code>, <code>paymentAmount</code>, <code>ttl?</code>): <code>Promise</code>&lt;<code>string</code>></p>
+<p>Transfers an amount of tokens from the direct caller to a recipient.</p>
+<h5 id="parameters-9">Parameters</h5>
+<p>| Name | Type | Description |
+| :------ | :------ | :------ |
+| <code>keys</code> | <code>AsymmetricKey</code> | AsymmetricKey that will be used to sign the transaction. |
+| <code>recipient</code> | <code>RecipientType</code> | Recipient address (it supports CLPublicKey, CLAccountHash and CLByteArray). |
+| <code>transferAmount</code> | <code>string</code> | Amount of tokens that will be transfered. |
+| <code>paymentAmount</code> | <code>string</code> | Amount that will be used to pay the transaction. |
+| <code>ttl</code> | <code>number</code> | Time to live in miliseconds after which transaction will be expired (defaults to 30m). |</p>
+<h5 id="returns-12">Returns</h5>
+<p><code>Promise</code>&lt;<code>string</code>></p>
+<p>Deploy hash.</p>
+<h5 id="definedin-21">Defined in</h5>
+<p><a href="https://github.com/casper-network/casper-contracts-js-clients/blob/c766d1b/packages/erc20-client/src/erc20client.ts#L163">erc20-client/src/erc20client.ts:163</a></p>
+<hr />
+<h4 id="transferfrom">transferFrom</h4>
+<p>▸ <strong>transferFrom</strong>(<code>keys</code>, <code>owner</code>, <code>recipient</code>, <code>transferAmount</code>, <code>paymentAmount</code>, <code>ttl?</code>): <code>Promise</code>&lt;<code>string</code>></p>
+<p>Transfers an amount of tokens from the owner to a recipient, if the direct caller has been previously approved to spend the specied amount on behalf of the owner.</p>
+<h5 id="parameters-10">Parameters</h5>
+<p>| Name | Type | Description |
+| :------ | :------ | :------ |
+| <code>keys</code> | <code>AsymmetricKey</code> | AsymmetricKey that will be used to sign the transaction. |
+| <code>owner</code> | <code>RecipientType</code> | Owner address (it supports CLPublicKey, CLAccountHash and CLByteArray). |
+| <code>recipient</code> | <code>RecipientType</code> | Recipient address (it supports CLPublicKey, CLAccountHash and CLByteArray). |
+| <code>transferAmount</code> | <code>string</code> | Amount of tokens that will be transfered. |
+| <code>paymentAmount</code> | <code>string</code> | Amount that will be used to pay the transaction. |
+| <code>ttl</code> | <code>number</code> | Time to live in miliseconds after which transaction will be expired (defaults to 30m). |</p>
+<h5 id="returns-13">Returns</h5>
+<p><code>Promise</code>&lt;<code>string</code>></p>
+<p>Deploy hash.</p>
+<h5 id="definedin-22">Defined in</h5>
+<p><a href="https://github.com/casper-network/casper-contracts-js-clients/blob/c766d1b/packages/erc20-client/src/erc20client.ts#L197">erc20-client/src/erc20client.ts:197</a></p>
+<h1 id="enums">Enums</h1>
+<p><a name="enumsconstantserc20eventsmd"></a></p>
+<p><a href="#readmemd">casper-erc20-js-client</a> / <a href="#modulesmd">Exports</a> / <a href="#modulesconstantsmd">constants</a> / ERC20Events</p>
+<h2 id="enumerationerc20events">Enumeration: ERC20Events</h2>
+<p><a href="#modulesconstantsmd">constants</a>.ERC20Events</p>
+<h3 id="tableofcontents-1">Table of contents</h3>
+<h4 id="enumerationmembers">Enumeration members</h4>
+<ul>
+<li><a href="#approve">Approve</a></li>
+<li><a href="#transfer">Transfer</a></li>
+</ul>
+<h3 id="enumerationmembers-1">Enumeration members</h3>
+<h4 id="approve-1">Approve</h4>
+<p>• <strong>Approve</strong> = <code>"approve"</code></p>
+<h5 id="definedin-23">Defined in</h5>
+<p><a href="https://github.com/casper-network/casper-contracts-js-clients/blob/c766d1b/packages/erc20-client/src/constants.ts#L3">erc20-client/src/constants.ts:3</a></p>
+<hr />
+<h4 id="transfer-1">Transfer</h4>
+<p>• <strong>Transfer</strong> = <code>"transfer"</code></p>
+<h5 id="definedin-24">Defined in</h5>
+<p><a href="https://github.com/casper-network/casper-contracts-js-clients/blob/c766d1b/packages/erc20-client/src/constants.ts#L2">erc20-client/src/constants.ts:2</a></p>
+<p><a name="modulesmd"></a></p>
+<p><a href="#readmemd">casper-erc20-js-client</a> / Exports</p>
+<h1 id="caspererc20jsclient-1">casper-erc20-js-client</h1>
+<h2 id="tableofcontents-2">Table of contents</h2>
+<h3 id="namespaces">Namespaces</h3>
+<ul>
+<li><a href="#modulesconstantsmd">constants</a></li>
+</ul>
+<h3 id="classes-1">Classes</h3>
+<ul>
+<li><a href="#classeserc20clientmd">ERC20Client</a></li>
+</ul>
+<h1 id="modules">Modules</h1>
+<p><a name="modulesconstantsmd"></a></p>
+<p><a href="#readmemd">casper-erc20-js-client</a> / <a href="#modulesmd">Exports</a> / constants</p>
+<h2 id="namespaceconstants">Namespace: constants</h2>
+<h3 id="tableofcontents-3">Table of contents</h3>
+<h4 id="enumerations">Enumerations</h4>
+<ul>
+<li><a href="#enumsconstantserc20eventsmd">ERC20Events</a></li>
+</ul>

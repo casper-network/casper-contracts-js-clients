@@ -55,7 +55,7 @@ class ERC20Client extends CasperContractClient {
    * @param paymentAmount The payment amount that will be used to install the contract.
    * @param wasmPath Path to the WASM file that will be installed.
    *
-   * @returns string Installation deploy hash. 
+   * @returns Installation deploy hash. 
    */
   public async install(
     keys: Keys.AsymmetricKey,
@@ -158,7 +158,7 @@ class ERC20Client extends CasperContractClient {
    * @param paymentAmount Amount that will be used to pay the transaction.
    * @param ttl Time to live in miliseconds after which transaction will be expired (defaults to 30m).
    *
-   * @returns string Deploy hash. 
+   * @returns Deploy hash. 
    */
   public async transfer(
     keys: Keys.AsymmetricKey,
@@ -192,7 +192,7 @@ class ERC20Client extends CasperContractClient {
    * @param paymentAmount Amount that will be used to pay the transaction.
    * @param ttl Time to live in miliseconds after which transaction will be expired (defaults to 30m).
    *
-   * @returns string Deploy hash. 
+   * @returns Deploy hash. 
    */
   public async transferFrom(
     keys: Keys.AsymmetricKey,
@@ -227,7 +227,7 @@ class ERC20Client extends CasperContractClient {
    * @param paymentAmount Amount that will be used to pay the transaction.
    * @param ttl Time to live in miliseconds after which transaction will be expired (defaults to 30m).
    *
-   * @returns string Deploy hash. 
+   * @returns Deploy hash. 
    */
   public async approve(
     keys: Keys.AsymmetricKey,
@@ -256,10 +256,11 @@ class ERC20Client extends CasperContractClient {
    *
    * @param account Account address (it supports CLPublicKey, CLAccountHash and CLByteArray).
    *
-   * @returns string Balance of an account.
+   * @returns Balance of an account.
    */
-  public async balanceOf(account: CLPublicKey) {
-    const key = new CLKey(new CLAccountHash(account.toAccountHash()));
+  public async balanceOf(account: RecipientType) {
+
+    const key = createRecipientAddress(account);
     const keyBytes = CLValueParsers.toBytes(key).unwrap();
     const itemKey = Buffer.from(keyBytes).toString("base64");
     const result = await utils.contractDictionaryGetter(
@@ -276,12 +277,12 @@ class ERC20Client extends CasperContractClient {
    * @param owner Owner address (it supports CLPublicKey, CLAccountHash and CLByteArray).
    * @param spender Spender address (it supports CLPublicKey, CLAccountHash and CLByteArray).
    *
-   * @returns string Amount in tokens.
+   * @returns Amount in tokens.
    */
-  public async allowances(owner: CLPublicKey, spender: CLPublicKey) {
+  public async allowances(owner: RecipientType, spender: RecipientType) {
     // TODO: REUSEABLE METHOD
-    const keyOwner = new CLKey(new CLAccountHash(owner.toAccountHash()));
-    const keySpender = new CLKey(new CLAccountHash(spender.toAccountHash()));
+    const keyOwner = createRecipientAddress(owner);
+    const keySpender = createRecipientAddress(spender);
     const finalBytes = concat([CLValueParsers.toBytes(keyOwner).unwrap(), CLValueParsers.toBytes(keySpender).unwrap()]);
     const blaked = blake.blake2b(finalBytes, undefined, 32);
     const encodedBytes = Buffer.from(blaked).toString("hex");

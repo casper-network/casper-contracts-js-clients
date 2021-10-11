@@ -12,7 +12,7 @@
   ],
   "dependencies": {
     "casper-js-client-helper": "file:../client-helper",
-    "casper-js-sdk": "^2.6.0"
+    "casper-js-sdk": "^2.6.1"
   },
   "publishConfig": {
     "access": "public"
@@ -21,6 +21,14 @@
     "dist": "npm run clean && npm run build",
     "clean": "rm -rf dist/",
     "build": "tsc -p tsconfig.build.json",
-    "test": "echo \"add tests\" && exit 0"
+    "test": "echo \"add tests\" && exit 0",
+    "docs": "rimraf temp-docs && typedoc --plugin typedoc-plugin-markdown --theme markdown --out temp-docs src/index.ts && concat-md --toc --decrease-title-levels --dir-name-as-title temp-docs > README.md && showdown makehtml -i README.md -o README.html && rimraf temp-docs"
+  },
+  "devDependencies": {
+    "concat-md": "^0.3.5",
+    "rimraf": "^3.0.2",
+    "showdown": "^1.9.1",
+    "typedoc": "^0.22.5",
+    "typedoc-plugin-markdown": "^3.11.3"
   }
 }
