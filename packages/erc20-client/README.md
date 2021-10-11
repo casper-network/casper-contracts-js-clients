@@ -104,4 +104,4 @@ const allowance = await erc20.allowances(ownersPublicKey, spenderPublicKey);
 
 ## Examples
 
-Examples available in a [main repo](https://github.com/casper-network/casper-contracts-js-clients) directory.
+Examples available in a [main repo](https://github.com/casper-network/casper-contracts-js-clients).
