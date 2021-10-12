@@ -1,9 +1,0 @@
-[x] Publish New version of SDK
-[ ] Check George's PR
-[ ] Add docs to ERC20
-
-======
-
-1. Add Google Accounts
-2. Add frontend
-3. Add login screen
