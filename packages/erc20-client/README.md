@@ -21,14 +21,13 @@ const erc20 = new ERC20Client(
 - Install contract
 ```
 const installDeployHash = await erc20.install(
-
   KEYS, // Key pair used for signing 
   "ACME Token" // Name of the token
   "ACME", // Token Symbol
   11, // Token decimals
   1000000000000000, // Token supply
   200000000000, // Payment amount
-  ../erc20/target/wasm32-unknown-unknown/release/erc20_token.wasm // Path to WASM file
+  "../erc20/target/wasm32-unknown-unknown/release/erc20_token.wasm" // Path to WASM file
 );
 ```
 
