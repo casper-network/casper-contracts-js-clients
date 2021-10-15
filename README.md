@@ -1,32 +1,64 @@
 # casper-contracts-js-clients
 
-This repo contains library that will help you creating clients for Casper contracts as well as few implementations of contract dedicated clients.
+This project contains a library that will help you create clients for Casper contracts and a few implementations of such clients dedicated to interacting with smart contracts on Casper. You will find these clients published in `npm`:
+- A Casper CEP-47 (NFT) client in JavaScript: [casper-cep47-js-client](https://www.npmjs.com/package/casper-cep47-js-client)
+- A Casper ERC-20 client in JavaScript: [casper-erc20-js-client](https://www.npmjs.com/package/casper-erc20-js-client)
 
-All of them are published in npm:
-- [casper-cep47-js-client](https://www.npmjs.com/package/casper-cep47-js-client)
-- [casper-erc20-js-client](https://www.npmjs.com/package/casper-erc20-js-client)
-
-Also there is an toolbelt library that can be used to write your own contract clients:
-- [casper-js-client-helper](https://www.npmjs.com/package/casper-js-client-helper)
+Also, we provide a toolkit that you can use to write your contract clients: 
+- A JavaScript client helper library: [casper-js-client-helper](https://www.npmjs.com/package/casper-js-client-helper)
 
 
-## Example usage of contracts
+## Usage examples
 
-The e2e tests can be treated as examples of usage. They are well documented and gives the overview of all functionalities of contract.
-Before running any e2e test please run `npm i` inside root directory.
+In this project, you will find end-to-end (e2e) tests, which you can also use as examples of interacting and using the contracts. The tests are well documented and can give you an overview of all contract functionality.
 
-### [erc20](packages/erc20-client)
+Before running an e2e test, run `npm i' inside the project's root directory:
 
-[install script](e2e/erc20/install.ts) / [example usage](e2e/erc20/installed.ts)
+```
+cd casper-erc20-js-client
+npm i
+```
 
-To run the scripts set all the variables in `.env.erc20` file (to make it easier you can use `.env.erc20.example` as a reference).
+### ERC-20 client usage
 
-Than run `npm run e2e:erc20:install` to install the contract and `npm run e2e:erc20:installed` to run the test example.
+Before running this example client, you must specify all the environment variables in the `.env.erc20` file. If you need help, reference the `.env.erc20.example` file.
 
-### [cep47](packages/cep47-client)
+**Steps:**
 
-[install script](e2e/cep47/install.ts) / [example usage](e2e/cep47/installed.ts)
+- Open the [ERC-20 client example](packages/erc20-client)
+- Set the environment variables in the `.env.erc20` file
+- Run the [install script](e2e/erc20/install.ts) 
+- View the [client usage example](e2e/erc20/installed.ts)
+- Install the contract:
 
-To run the scripts set all the variables in `.env.cep47` file (to make it easier you can use `.env.cep47.example` as a reference).
+    ```
+    npm run e2e:erc20:install
+    ```
 
-Than run `npm run e2e:cep47:install` to install the contract and `npm run e2e:cep47:installed` to run the test example.
+- Run the test example:
+
+    ```
+    npm run e2e:erc20:installed
+    ```
+
+### CEP-47 client usage
+
+Before running this example client, you must specify all the environment variables in the `.env.cep47` file. If you need help, reference the `.env.cep47.example` file.
+
+**Steps:**
+
+- Open the [CEP-47 client example](packages/cep47-client)
+- Set the environment variables in the `.env.erc20` file
+- Run the [install script](e2e/cep47/install.ts) 
+- View the [client usage example](e2e/cep47/installed.ts)
+- Install the contract:
+
+    ```
+    npm run e2e:cep47:install
+    ```
+
+- Run the test example:
+
+    ```
+    npm run e2e:cep47:installed
+    ```
