@@ -2,26 +2,31 @@
 
 ## Installation
 
-`npm i casper-cep47-js-client`
+Run this command to install the CEP-47 JavaScript client:
+
+```
+npm i casper-cep47-js-client
+```
 
 ## Usage
 
-`casper-cep47-js-client` gives you and easy way to install and interact with Casper `cep47` smart contract.
+This client gives you an easy way to install and interact with the Casper CEP-47 (NFT) smart contract.
 
 ### Methods
 
-WIP
+This description is work in progress.
 
 ### Event stream
 
-In `cep47-js-client` it's possible to track all of the events related to your contract.
+With this client, you can track all of the events related to your contract. You will find the example usage [here](../../e2e/cep47/installed.ts#L51-L67).
 
-- you need to provide optional parameter `eventStreamAddress` to `CEP47Client` constructor
-- then you can call `onEvent()` method on `CEP47Client`, it requires you to provide:
-  - `eventNames` - list of event types that you want to watch (there is a `CEP47Events` enum provided)
-  - `callback` - the function that will be triggered when event happen, it will have following parameters
-    - `eventName` - name of the event
-    - `deployStatus` - it contains basic info about the deploy - `deployHash`, `success` which is a boolean and `error` which can be null or String.
-    - `result` - a `CLValue` structure conatining data describing the event
+**Steps to track events:**
 
-The example usage is [here](../../e2e/cep47/installed.ts#L51-L67).
+- Provide the optional parameter `eventStreamAddress` to the `CEP47Client` constructor
+- Call the `onEvent()` method on the `CEP47Client`, which requires you to provide the following:
+  - `eventNames` - a list of event types that you want to monitor; note the `CEP47Events` enum provided
+  - `callback` - a function that will be triggered when an event happens, with the following parameters:
+    - `eventName` - the name of the event
+    - `deployStatus` - provides basic information about the deploy, with these possible values: *deployHash*, *success* (which is a boolean), and *error* (which can be null or String)
+    - `result` - a `CLValue` structure containing data describing the event
+
