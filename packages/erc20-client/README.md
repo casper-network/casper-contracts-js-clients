@@ -1,14 +1,18 @@
 # `casper-erc20-js-client`
 
-JS Client that gives you easy way to install and interact with Casper ERC20 contract.
+This JavaScript client gives you an easy way to install and interact with the Casper ERC-20 contract.
 
 ## Installation
 
-`npm i casper-erc20-js-client`
+Run this command to install the client:
 
-## Usage
+```
+npm i casper-erc20-js-client
+```
 
-- Create an instance of ERC20 client
+## Usage example
+
+Create an instance of the ERC-20 client:
 
 ```
 const erc20 = new ERC20Client(
@@ -18,7 +22,8 @@ const erc20 = new ERC20Client(
 );
 ```
 
-- Install contract
+Install the contract:
+
 ```
 const installDeployHash = await erc20.install(
   KEYS, // Key pair used for signing 
@@ -31,13 +36,13 @@ const installDeployHash = await erc20.install(
 );
 ```
 
-- Set contract hash
+Set the contract hash (a unique identifier for the network):
 
 ```
 await erc20.setContractHash('hash-c2402c3d88b13f14390ff46fde9c06b8590c9e45a9802f7fb8a2674ff9c1e5b1');
 ```
 
-- Getters
+Set functions (getters) to retrieve values:
 
 ```
 const name = await erc20.name();
@@ -49,22 +54,9 @@ const totalSupply = await erc20.totalSupply();
 const decimals = await erc20.decimals();
 ```
 
-- Transfer
+**Transfers**
 
-Transfers an amount of tokens from the direct caller to a recipient.
-
-```
-const deployHash = await erc20.transfer(
-  KEYS, // Key pair used for signing
-  receiverPublicKey, // Receiver public key
-  "2000000000", // Amount to transfer
-  "10000000000000" // Payment amount
-);
-```
-
-- Transfer From
-
-Transfers an amount of tokens from the owner to a recipient, if the direct caller has been previously approved to spend the specied amount on behalf of the owner
+Transfer some tokens from the direct caller to a recipient:
 
 ```
 const deployHash = await erc20.transfer(
@@ -75,14 +67,28 @@ const deployHash = await erc20.transfer(
 );
 ```
 
-- Balance of account
+Transfer from an account owner to a recipient given that the direct caller has been previously approved to spend the specified amount on behalf of the owner:
+
+```
+const deployHash = await erc20.transfer(
+  KEYS, // Key pair used for signing
+  receiverPublicKey, // Receiver public key
+  "2000000000", // Amount to transfer
+  "10000000000000" // Payment amount
+);
+```
+
+**Balances**
+
+Request the balance of an account with *balanceOf*:
+
 ```
 const balance = await erc20.balanceOf(publicKey);
 ```
 
-- Approve
+**Approvals**
 
-Allows a spender to transfer up to an amount of the direct caller’s tokens.
+Allow a spender to transfer up to a number of the direct caller’s tokens:
 
 ```
 const deployHash = await erc20.approve(
@@ -93,14 +99,14 @@ const deployHash = await erc20.approve(
 );
 ```
 
-- Allowance
+**Allowance**
 
-Returns the amount of owner’s tokens allowed to be spent by spender.
+Return the number of owner’s tokens allowed to be spent by spender:
 
 ```
 const allowance = await erc20.allowances(ownersPublicKey, spenderPublicKey);
 ```
 
-## Examples
+## More examples
 
-Examples available in a [main repo](https://github.com/casper-network/casper-contracts-js-clients).
+You can find all the available examples in the [central project repository](https://github.com/casper-network/casper-contracts-js-clients).
