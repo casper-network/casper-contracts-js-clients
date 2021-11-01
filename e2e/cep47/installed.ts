@@ -99,13 +99,27 @@ const test = async () => {
     KEYS,
     KEYS.publicKey,
     null,
-    new Map([["name", "jan"]]),
+    new Map([["name", "Jan"]]),
     MINT_ONE_PAYMENT_AMOUNT!,
     900000
   );
   console.log("... Mint deploy hash: ", mintDeployHash);
 
-  await getDeploy(NODE_ADDRESS!, mintDeployHash);
+  // await getDeploy(NODE_ADDRESS!, mintDeployHash);
+  // console.log("... Token minted successfully");
+
+  const mintDeployHash2 = await cep47.mintOne(
+    KEYS,
+    KEYS.publicKey,
+    null,
+    new Map([["name", "Medha"]]),
+    MINT_ONE_PAYMENT_AMOUNT!,
+    900000,
+    [mintDeployHash]
+  );
+  console.log("... Mint deploy hash: ", mintDeployHash2);
+  
+  await getDeploy(NODE_ADDRESS!, mintDeployHash2);
   console.log("... Token minted successfully");
 
   let tokensOf = await cep47.getTokensOf(KEYS.publicKey);
