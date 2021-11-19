@@ -1,6 +1,6 @@
 {
   "name": "casper-erc20-js-client",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "> TODO: description",
   "author": "Jan Hoffmann <jan@casperlabs.io>",
   "homepage": "",
@@ -22,6 +22,5 @@
     "clean": "rm -rf dist/",
     "build": "tsc -p tsconfig.build.json",
     "test": "echo \"add tests\" && exit 0"
-  },
-  "devDependencies": {}
+  }
 }
