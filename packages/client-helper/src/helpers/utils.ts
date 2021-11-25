@@ -158,7 +158,9 @@ export const parseEvent = (
               const event = clValue.get(CLValueBuilder.string("event_type"));
               if (
                 hash &&
-                hash.value() === contractPackageHash &&
+                // NOTE: Calling toLowerCase() because current JS-SDK doesn't support checksumed hashes and returns all lower case value
+                // Remove it after updating SDK
+                hash.value() === contractPackageHash.toLowerCase() &&
                 event &&
                 eventNames.includes(event.value())
               ) {
