@@ -50,14 +50,19 @@ class CEP47Client extends CasperContractClient {
     tokenName: string,
     tokenSymbol: string,
     tokenMeta: Map<string, string>,
+    tokenAdmin: RecipientType,
     paymentAmount: string,
     wasmPath: string
   ) {
     const runtimeArgs = RuntimeArgs.fromMap({
-      token_name: CLValueBuilder.string(tokenName),
-      token_symbol: CLValueBuilder.string(tokenSymbol),
-      token_meta: toCLMap(tokenMeta),
+      name: CLValueBuilder.string(tokenName),
+      contract_name: CLValueBuilder.string(tokenName),
+      symbol: CLValueBuilder.string(tokenSymbol),
+      meta: toCLMap(tokenMeta),
+      admin: createRecipientAddress(tokenAdmin)
     });
+
+    console.log(runtimeArgs);
 
     return await installContract(
       this.chainName,
@@ -249,17 +254,28 @@ class CEP47Client extends CasperContractClient {
     dependencies = []
   ) {
     const tokenId = id
-      ? CLValueBuilder.option(Some(CLValueBuilder.string(id)))
+      ? CLValueBuilder.option(Some(
+        CLValueBuilder.list([
+          CLValueBuilder.string(id)
+        ])
+      ))
       : CLValueBuilder.option(None, CLTypeBuilder.string());
+
+    // const tokenMetas = Array.from(meta, ([name, value]) => [
+    //   CLValueBuilder.string(name),
+    //   CLValueBuilder.string(value),
+    // ]);
 
     const runtimeArgs = RuntimeArgs.fromMap({
       recipient: createRecipientAddress(recipient),
-      token_id: tokenId,
-      token_meta: toCLMap(meta),
+      token_ids: tokenId,
+      token_metas: CLValueBuilder.list([toCLMap(meta)]),
     });
 
+    console.log(runtimeArgs);
+
     return await this.contractCall({
-      entryPoint: "mint_one",
+      entryPoint: "mint",
       paymentAmount,
       keys: keys,
       runtimeArgs,

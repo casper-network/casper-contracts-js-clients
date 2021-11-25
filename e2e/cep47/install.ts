@@ -50,6 +50,7 @@ const test = async () => {
     TOKEN_NAME!,
     TOKEN_SYMBOL!,
     TOKEN_META!,
+    KEYS.publicKey,
     INSTALL_PAYMENT_AMOUNT!,
     WASM_PATH!
   );
@@ -67,7 +68,7 @@ const test = async () => {
 
   const contractHash = await utils.getAccountNamedKeyValue(
     accountInfo,
-    `${TOKEN_NAME!}_contract`
+    `${TOKEN_NAME!}_contract_hash`
   );
 
   console.log(`... Contract Hash: ${contractHash}`);
