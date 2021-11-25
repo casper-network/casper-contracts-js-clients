@@ -85,11 +85,11 @@ class CEP47Client extends CasperContractClient {
       hash,
       LIST_OF_NAMED_KEYS
     );
-    this.contractHash = hash;
+    this.contractHash = hash.toLowerCase();
     this.contractPackageHash = contractPackageHash.replace(
       "contract-package-wasm",
       ""
-    );
+    ).toLowerCase();
     /* @ts-ignore */
     this.namedKeys = namedKeys;
   }
