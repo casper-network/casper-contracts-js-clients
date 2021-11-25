@@ -70,6 +70,8 @@ class CEP47Client extends CasperContractClient {
   }
 
   public async setContractHash(hash: string) {
+    const lowercaseHash = hash.toLowerCase();
+
     const LIST_OF_NAMED_KEYS = [
       "balances",
       "metadata",
@@ -82,10 +84,10 @@ class CEP47Client extends CasperContractClient {
 
     const { contractPackageHash, namedKeys } = await setClient(
       this.nodeAddress,
-      hash,
+      lowercaseHash,
       LIST_OF_NAMED_KEYS
     );
-    this.contractHash = hash.toLowerCase();
+    this.contractHash = lowercaseHash;
     this.contractPackageHash = contractPackageHash.replace(
       "contract-package-wasm",
       ""
