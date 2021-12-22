@@ -28,3 +28,4 @@ export interface IContractCallParams {
   ttl: number;
   dependencies?: string[];
 }
+export type OptionalKey = Keys.AsymmetricKey | null;

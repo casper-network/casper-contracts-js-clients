@@ -117,7 +117,7 @@ export const contractSimpleGetter = async (
 
 export const contractCallFn = async ({
   nodeAddress,
-  keys,
+  keys = null,
   chainName,
   contractHash,
   entryPoint,
@@ -141,12 +141,17 @@ export const contractCallFn = async ({
     DeployUtil.standardPayment(paymentAmount)
   );
 
-  // Sign deploy.
-  deploy = client.signDeploy(deploy, keys);
+  if (keys) {
+    // Sign deploy.
+    deploy = client.signDeploy(deploy, keys);
 
-  // Dispatch deploy to node.
-  const deployHash = await client.putDeploy(deploy);
+    // Dispatch deploy to node.
+    const deployHash = await client.putDeploy(deploy);
 
-  return deployHash;
+    return deployHash;
+  }
+
+  return deploy;
+
 };
 

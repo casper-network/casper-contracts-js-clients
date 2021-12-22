@@ -175,7 +175,7 @@ export const parseEvent = (
 
 interface IInstallParams {
   nodeAddress: string;
-  keys: Keys.AsymmetricKey;
+  keys: Keys.AsymmetricKey | null;
   chainName: string;
   pathToContract: string;
   runtimeArgs: RuntimeArgs;
@@ -199,6 +199,7 @@ export const installWasmFile = async ({
       chainName
     ),
     DeployUtil.ExecutableDeployItem.newModuleBytes(
+      // TODO: Get rid of this
       getBinary(pathToContract),
       runtimeArgs
     ),

@@ -36,6 +36,7 @@ const {
 type RecipientType = types.RecipientType;
 type IPendingDeploy = types.IPendingDeploy;
 type IClassContractCallParams = types.IClassContractCallParams;
+type OptionalKeys = types.OptionalKeys; 
 
 class ERC20Client extends CasperContractClient {
   protected namedKeys?: {
@@ -58,7 +59,7 @@ class ERC20Client extends CasperContractClient {
    * @returns Installation deploy hash. 
    */
   public async install(
-    keys: Keys.AsymmetricKey,
+    keys: OptionalKeys,
     tokenName: string,
     tokenSymbol: string,
     tokenDecimals: string,
@@ -195,7 +196,7 @@ class ERC20Client extends CasperContractClient {
    * @returns Deploy hash. 
    */
   public async transferFrom(
-    keys: Keys.AsymmetricKey,
+    keys: Keys.AsymmetricKey | null,
     owner: RecipientType,
     recipient: RecipientType,
     transferAmount: string,
@@ -230,7 +231,7 @@ class ERC20Client extends CasperContractClient {
    * @returns Deploy hash. 
    */
   public async approve(
-    keys: Keys.AsymmetricKey,
+    keys: OptionalKeys,
     spender: RecipientType,
     approveAmount: string,
     paymentAmount: string,

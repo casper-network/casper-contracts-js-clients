@@ -39,6 +39,7 @@ const KEYS = Keys.Ed25519.parseKeyFiles(
 );
 
 const test = async () => {
+  console.log(KEYS);
   const cep47 = new CEP47Client(
     NODE_ADDRESS!,
     CHAIN_NAME!,

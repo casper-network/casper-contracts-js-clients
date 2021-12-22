@@ -26,7 +26,7 @@ import {
   contractSimpleGetter,
   contractCallFn,
 } from "./helpers/lib";
-import { RecipientType, IPendingDeploy, IClassContractCallParams } from "./types";
+import { RecipientType, IPendingDeploy, IClassContractCallParams, OptionalKey } from "./types";
 
 class ContractClient {
   public contractHash?: string;
@@ -42,7 +42,7 @@ class ContractClient {
   ) {}
 
   public async contractCall({
-    keys,
+    keys = OptionalKey,
     paymentAmount,
     entryPoint,
     runtimeArgs,
