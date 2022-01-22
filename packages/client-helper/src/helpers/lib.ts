@@ -10,14 +10,15 @@ import {
   CLString,
   CLValue,
   DeployUtil,
+  PUBLIC_KEY_ID
 } from "casper-js-sdk";
 
 import { IContractCallParams, RecipientType } from "../types";
 import * as utils from "./utils";
 
 export const createRecipientAddress = (recipient: RecipientType): CLKey => {
-  if (recipient instanceof CLPublicKey) {
-    return new CLKey(new CLAccountHash(recipient.toAccountHash()));
+  if (recipient.clType().toString() === PUBLIC_KEY_ID) {
+    return new CLKey(new CLAccountHash((recipient as CLPublicKey).toAccountHash()));
   } else {
     return new CLKey(recipient);
   }
