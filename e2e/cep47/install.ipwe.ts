@@ -1,9 +1,8 @@
 import { config } from "dotenv";
 config({ path: ".env.cep47" });
 import { CEP47Client } from "casper-cep47-js-client";
-// import { utils } from "casper-js-client-helper";
-import { parseTokenMeta, sleep, getDeploy, getAccountInfo, getAccountNamedKeyValue } from "../utils";
-import * as fs from "fs";
+import { utils } from "casper-js-client-helper";
+import { parseTokenMeta, sleep, getDeploy } from "../utils";
 
 import {
   CLValueBuilder,
@@ -19,7 +18,6 @@ const {
   WASM_PATH,
   MASTER_KEY_PAIR_PATH,
   TOKEN_NAME,
-  CONTRACT_NAME,
   TOKEN_SYMBOL,
   CONTRACT_HASH,
   INSTALL_PAYMENT_AMOUNT,
@@ -33,10 +31,6 @@ const {
   MINT_MANY_META_COUNT,
 } = process.env;
 
-export const getBinary = (pathToBinary: string) => {
-  return new Uint8Array(fs.readFileSync(pathToBinary, null).buffer);
-};
-
 const TOKEN_META = new Map(parseTokenMeta(process.env.TOKEN_META!));
 
 const KEYS = Keys.Ed25519.parseKeyFiles(
@@ -44,43 +38,36 @@ const KEYS = Keys.Ed25519.parseKeyFiles(
   `${MASTER_KEY_PAIR_PATH}/secret_key.pem`
 );
 
-console.log(TOKEN_NAME!, CONTRACT_NAME!, TOKEN_SYMBOL!, TOKEN_META);
-
 const test = async () => {
   const cep47 = new CEP47Client(
     NODE_ADDRESS!,
-    CHAIN_NAME!
+    CHAIN_NAME!,
+    EVENT_STREAM_ADDRESS!
   );
 
   const installDeployHash = await cep47.install(
-    getBinary(WASM_PATH!),
-    {
-      name: TOKEN_NAME!,
-      contractName: CONTRACT_NAME!,
-      symbol: TOKEN_SYMBOL!,
-      meta: TOKEN_META
-    },
+    KEYS,
+    TOKEN_NAME!,
+    TOKEN_SYMBOL!,
+    TOKEN_META!,
     INSTALL_PAYMENT_AMOUNT!,
-    KEYS.publicKey,
-    [KEYS],
+    WASM_PATH!
   );
 
-  const hash = await installDeployHash.send(NODE_ADDRESS!);
+  console.log(`... Contract installation deployHash: ${installDeployHash}`);
 
-  console.log(`... Contract installation deployHash: ${hash}`);
-
-  await getDeploy(NODE_ADDRESS!, hash);
+  await getDeploy(NODE_ADDRESS!, installDeployHash);
 
   console.log(`... Contract installed successfully.`);
 
-  let accountInfo = await getAccountInfo(NODE_ADDRESS!, KEYS.publicKey);
+  let accountInfo = await utils.getAccountInfo(NODE_ADDRESS!, KEYS.publicKey);
 
   console.log(`... Account Info: `);
   console.log(JSON.stringify(accountInfo, null, 2));
 
-  const contractHash = await getAccountNamedKeyValue(
+  const contractHash = await utils.getAccountNamedKeyValue(
     accountInfo,
-    `${'my_contract'}_contract_hash`
+    `${TOKEN_NAME!}_contract`
   );
 
   console.log(`... Contract Hash: ${contractHash}`);

@@ -14,8 +14,8 @@
     "access": "public"
   },
   "dependencies": {
-    "casper-js-client-helper": "file:../client-helper",
-    "casper-js-sdk": "^2.7.1"
+    "casper-js-sdk": "^2.7.1",
+    "ts-results": "^3.3.0"
   },
   "scripts": {
     "dist": "npm run clean && npm run build",
