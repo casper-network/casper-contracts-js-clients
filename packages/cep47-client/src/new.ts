@@ -1,4 +1,14 @@
-import { CLPublicKey, CLKey, RuntimeArgs, CasperClient, Contracts, Keys, CLKeyParameters, CLValueBuilder, CLValueParsers } from "casper-js-sdk";
+import {
+  CLPublicKey,
+  CLKey,
+  RuntimeArgs,
+  CasperClient,
+  Contracts,
+  Keys,
+  CLKeyParameters,
+  CLValueBuilder,
+  CLValueParsers 
+} from "casper-js-sdk";
 
 const { Contract, toCLMap } = Contracts;
 
@@ -56,8 +66,32 @@ export class CEP47Client {
   }
   
   public async balanceOf(account: CLPublicKey) {
-    return this.contractClient
+    const result = await this.contractClient
       .queryContractDictionary('balances', account.toAccountHashStr().slice(13));
+
+    const maybeValue = result.value().unwrap();
+
+    return maybeValue.value().toString();
+  }
+
+  public async getOwnerOf(tokenId: string) {
+    const result = await this.contractClient
+      .queryContractDictionary('owners', tokenId);
+
+    const maybeValue = result.value().unwrap();
+
+    return `account-hash-${Buffer.from(maybeValue.value().value()).toString(
+      "hex"
+    )}`;
+  }
+
+  public async getTokenMeta(tokenId: string) {
+    const result = await this.contractClient
+      .queryContractDictionary('metadata', tokenId);
+
+    const maybeValue = result.value().unwrap();
+
+    return fromCLMap(maybeValue);
   }
 
   public async mint(

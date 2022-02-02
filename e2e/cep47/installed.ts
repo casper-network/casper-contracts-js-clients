@@ -99,6 +99,15 @@ const test = async () => {
 
   console.log(balanceOf);
 
+  const ownerOfTokenOne = await cep47.getOwnerOf("1");
+
+  // console.log("***");
+  // console.log("***");
+  // console.log(ownerOfTokenOne.value().unwrap().value());
+  console.log(ownerOfTokenOne);
+  // console.log("***");
+  // console.log("***");
+
   // const mintDeploy = await cep47.mint(
   //   KEYS.publicKey,
   //   ["01"],
