@@ -9,6 +9,8 @@ import {
   CLValueBuilder,
   CLValueParsers 
 } from "casper-js-sdk";
+import { concat } from "@ethersproject/bytes";
+import blake from "blakejs";
 
 const { Contract, toCLMap, fromCLMap } = Contracts;
 
@@ -94,6 +96,78 @@ export class CEP47Client {
     return fromCLMap(maybeValue);
   }
 
+  public async getTokenByIndex(owner: CLPublicKey, index: string) {
+    const ownerBytes = CLValueParsers.toBytes(CLValueBuilder.key(owner)).unwrap();
+    const indexBytes = CLValueParsers.toBytes(CLValueBuilder.u256(index)).unwrap();
+
+    const blaked = blake.blake2b(concat([ownerBytes, indexBytes]), undefined, 32);
+    const hex = Buffer.from(blaked).toString('hex');
+
+    const result = await this.contractClient.queryContractDictionary('owned_tokens_by_index', hex);
+
+    const maybeValue = result.value().unwrap();
+
+    return maybeValue.value().toString();
+  }
+
+  public async getIndexByToken(
+    owner: CLKeyParameters,
+    tokenId: string
+  ) {
+    const ownerBytes = CLValueParsers.toBytes(CLValueBuilder.key(owner)).unwrap();
+    const idBytes = CLValueParsers.toBytes(CLValueBuilder.u256(tokenId)).unwrap();
+
+    const blaked = blake.blake2b(concat([ownerBytes, idBytes]), undefined, 32);
+    const hex = Buffer.from(blaked).toString('hex');
+
+    const result = await this.contractClient.queryContractDictionary('owned_indexes_by_token', hex);
+
+    const maybeValue = result.value().unwrap();
+
+    return maybeValue.value().toString();
+  }
+
+  public async getAllowance(
+    owner: CLKeyParameters,
+    tokenId: string
+  ) {
+    const ownerBytes = CLValueParsers.toBytes(CLValueBuilder.key(owner)).unwrap();
+    const idBytes = CLValueParsers.toBytes(CLValueBuilder.string(tokenId)).unwrap();
+
+    const blaked = blake.blake2b(concat([ownerBytes, idBytes]), undefined, 32);
+    const hex = Buffer.from(blaked).toString('hex');
+
+    const result = await this.contractClient.queryContractDictionary('allowances', hex);
+
+    const maybeValue = result.value().unwrap();
+
+    return `account-hash-${Buffer.from(maybeValue.value().value()).toString(
+      "hex"
+    )}`;
+  }
+
+  public async approve(
+    spender: CLKeyParameters,
+    ids: string[],
+    paymentAmount: string,
+    sender: CLPublicKey,
+    keys?: Keys.AsymmetricKey[]
+  ) {
+    const runtimeArgs = RuntimeArgs.fromMap({
+      spender: CLValueBuilder.key(spender),
+      token_ids: CLValueBuilder.list(ids.map(id => CLValueBuilder.u256(id)))
+    });
+
+    return this.contractClient.callEntrypoint(
+      'approve',
+      runtimeArgs,
+      sender,
+      this.networkName,
+      paymentAmount,
+      keys
+    );
+  }
+
   public async mint(
     recipient: CLKeyParameters,
     ids: string[],
@@ -118,4 +192,25 @@ export class CEP47Client {
     );
   }
 
+  public async burn(
+    owner: CLKeyParameters,
+    ids: string[],
+    paymentAmount: string,
+    sender: CLPublicKey,
+    keys?: Keys.AsymmetricKey[]
+  ) {
+    const runtimeArgs = RuntimeArgs.fromMap({
+      owner: CLValueBuilder.key(owner),
+      token_ids: CLValueBuilder.list(ids.map(id => CLValueBuilder.u256(id))),
+    });
+
+    return this.contractClient.callEntrypoint(
+      'burn',
+      runtimeArgs,
+      sender,
+      this.networkName,
+      paymentAmount,
+      keys
+    );
+  }
 }

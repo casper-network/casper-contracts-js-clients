@@ -10,6 +10,7 @@ import {
   CLPublicKey,
   CLAccountHash,
   CLPublicKeyType,
+  DeployUtil
 } from "casper-js-sdk";
 
 // const { CEP47Events } = constants;
@@ -95,41 +96,86 @@ const test = async () => {
   let totalSupply = await cep47.totalSupply();
   console.log(`... Total supply: ${totalSupply}`);
 
-  const balanceOf = await cep47.balanceOf(KEYS.publicKey);
 
-  console.log(balanceOf);
+  //****************//
+  //* Mint Section *//
+  //****************//
+  //console.log("... Mint one token");
+  //const mintDeploy = await cep47.mint(
+  //  KEYS.publicKey,
+  //  ["1"],
+  //  [new Map([['number', 'one']])],
+  //  MINT_ONE_PAYMENT_AMOUNT!,
+  //  KEYS.publicKey,
+  //  [KEYS]
+  //);
 
-  const ownerOfTokenOne = await cep47.getOwnerOf("1");
+  //const mintDeployHash = await mintDeploy.send(NODE_ADDRESS!);
 
-  // console.log("***");
-  // console.log("***");
-  // console.log(ownerOfTokenOne.value().unwrap().value());
-  console.log(ownerOfTokenOne);
-  // console.log("***");
-  // console.log("***");
+  //console.log("... Mint deploy hash: ", mintDeployHash);
 
-  const tokenOneMeta = await cep47.getTokenMeta("1");
+  //await getDeploy(NODE_ADDRESS!, mintDeployHash);
+  //console.log("... Token minted successfully");
 
-  console.log(tokenOneMeta);
+  ////* Checks after mint *//
+  //const balanceOf = await cep47.balanceOf(KEYS.publicKey);
 
-  // const mintDeploy = await cep47.mint(
+  //console.log(balanceOf);
+
+  //const ownerOfTokenOne = await cep47.getOwnerOf("1");
+
+  //console.log(ownerOfTokenOne);
+
+  //const tokenOneMeta = await cep47.getTokenMeta("1");
+
+  //console.log(tokenOneMeta);
+
+  const tokenByIndex = await cep47.getTokenByIndex(KEYS.publicKey, "0");
+  console.log(tokenByIndex);
+
+  const indexByToken = await cep47.getIndexByToken(KEYS.publicKey, "1");
+  console.log(indexByToken);
+
+  ////********************//
+  ////* Approval section *//
+  ////********************//
+  //const approveDeploy = await cep47.approve(
+  //  CLPublicKey.fromHex("01a6dbc8c0866314c241fe4c3fd10b54670cfc91dc56bd4a0a48ff1aad968d60b8"),
+  //  ["1"],
+  //  MINT_ONE_PAYMENT_AMOUNT!,
+  //  KEYS.publicKey,
+  //  [KEYS]
+  //);
+
+  //const approveDeployHash = await approveDeploy.send(NODE_ADDRESS!);
+
+  //console.log("... Approval deploy hash: ", approveDeployHash);
+
+  //await getDeploy(NODE_ADDRESS!, approveDeployHash);
+  //console.log("... Token approved successfully");
+
+  //** Checks after approval **//
+  // const allowanceOfTokenOne = await cep47.getAllowance(KEYS.publicKey, "1");
+
+  //****************//
+  //* Burn section *//
+  //****************//
+  // const burnDeploy = await cep47.burn(
   //   KEYS.publicKey,
-  //   ["01"],
-  //   [new Map([['number', 'one']])],
+  //   ["1"],
   //   MINT_ONE_PAYMENT_AMOUNT!,
   //   KEYS.publicKey,
   //   [KEYS]
   // );
 
-  // const mintDeployHash = await mintDeploy.send(NODE_ADDRESS!);
+  // const burnDeployHash = await burnDeploy.send(NODE_ADDRESS!);
 
-  // console.log("... Mint deploy hash: ", mintDeployHash);
+  // console.log("... Burn deploy hash: ", burnDeployHash);
 
-  // await getDeploy(NODE_ADDRESS!, mintDeployHash);
-  // console.log("... Token minted successfully");
+  // await getDeploy(NODE_ADDRESS!, burnDeployHash);
+  // console.log("... Token burned successfully");
 
   // OLD
-
   // const mintDeployHash = await cep47.mintOne(
   //   KEYS,
   //   KEYS.publicKey,
