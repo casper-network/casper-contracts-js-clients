@@ -10,7 +10,7 @@ import {
   CLValueParsers 
 } from "casper-js-sdk";
 
-const { Contract, toCLMap } = Contracts;
+const { Contract, toCLMap, fromCLMap } = Contracts;
 
 export interface CEP47InstallArgs {
   name: string,
@@ -89,7 +89,7 @@ export class CEP47Client {
     const result = await this.contractClient
       .queryContractDictionary('metadata', tokenId);
 
-    const maybeValue = result.value().unwrap();
+    const maybeValue = result.value().unwrap().value();
 
     return fromCLMap(maybeValue);
   }

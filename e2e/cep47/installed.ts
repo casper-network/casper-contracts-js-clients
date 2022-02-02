@@ -108,6 +108,10 @@ const test = async () => {
   // console.log("***");
   // console.log("***");
 
+  const tokenOneMeta = await cep47.getTokenMeta("1");
+
+  console.log(tokenOneMeta);
+
   // const mintDeploy = await cep47.mint(
   //   KEYS.publicKey,
   //   ["01"],
