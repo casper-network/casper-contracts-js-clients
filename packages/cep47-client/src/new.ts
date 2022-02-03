@@ -21,6 +21,13 @@ export interface CEP47InstallArgs {
   meta: Map<string, string>
 };
 
+export enum CEP47Events {
+  MintOne = "cep47_mint_one",
+  TransferToken = "cep47_transfer_token",
+  BurnOne = "cep47_burn_one",
+  MetadataUpdate = 'cep47_metadata_update'
+}
+
 export class CEP47Client {
   casperClient: CasperClient;
   contractClient: Contracts.Contract;
@@ -34,7 +41,7 @@ export class CEP47Client {
     wasm: Uint8Array,
     args: CEP47InstallArgs,
     paymentAmount: string,
-    sender: CLPublicKey,
+    deploySender: CLPublicKey,
     keys?: Keys.AsymmetricKey[]
   ) {
     const runtimeArgs = RuntimeArgs.fromMap({
@@ -44,7 +51,7 @@ export class CEP47Client {
       meta: toCLMap(args.meta),
     });
 
-    return this.contractClient.install(wasm, runtimeArgs, paymentAmount, sender, this.networkName, keys || []);
+    return this.contractClient.install(wasm, runtimeArgs, paymentAmount, deploySender, this.networkName, keys || []);
   }
 
   public setContractHash(contractHash: string, contractPackageHash?: string) {
@@ -150,7 +157,7 @@ export class CEP47Client {
     spender: CLKeyParameters,
     ids: string[],
     paymentAmount: string,
-    sender: CLPublicKey,
+    deploySender: CLPublicKey,
     keys?: Keys.AsymmetricKey[]
   ) {
     const runtimeArgs = RuntimeArgs.fromMap({
@@ -161,7 +168,7 @@ export class CEP47Client {
     return this.contractClient.callEntrypoint(
       'approve',
       runtimeArgs,
-      sender,
+      deploySender,
       this.networkName,
       paymentAmount,
       keys
@@ -173,7 +180,7 @@ export class CEP47Client {
     ids: string[],
     metas: Map<string, string>[],
     paymentAmount: string,
-    sender: CLPublicKey,
+    deploySender: CLPublicKey,
     keys?: Keys.AsymmetricKey[]
   ) {
     const runtimeArgs = RuntimeArgs.fromMap({
@@ -185,7 +192,33 @@ export class CEP47Client {
     return this.contractClient.callEntrypoint(
       'mint',
       runtimeArgs,
-      sender,
+      deploySender,
+      this.networkName,
+      paymentAmount,
+      keys
+    );
+  }
+
+  public async mintCopies(
+    recipient: CLKeyParameters,
+    ids: string[],
+    meta: Map<string, string>,
+    count: number,
+    paymentAmount: string,
+    deploySender: CLPublicKey,
+    keys?: Keys.AsymmetricKey[]
+  ) {
+    const runtimeArgs = RuntimeArgs.fromMap({
+      recipient: CLValueBuilder.key(recipient),
+      token_ids: CLValueBuilder.list(ids.map(id => CLValueBuilder.u256(id))),
+      token_meta: toCLMap(meta),
+      count: CLValueBuilder.u32(count)
+    });
+
+    return this.contractClient.callEntrypoint(
+      'mint_copies',
+      runtimeArgs,
+      deploySender,
       this.networkName,
       paymentAmount,
       keys
@@ -196,7 +229,7 @@ export class CEP47Client {
     owner: CLKeyParameters,
     ids: string[],
     paymentAmount: string,
-    sender: CLPublicKey,
+    deploySender: CLPublicKey,
     keys?: Keys.AsymmetricKey[]
   ) {
     const runtimeArgs = RuntimeArgs.fromMap({
@@ -207,10 +240,79 @@ export class CEP47Client {
     return this.contractClient.callEntrypoint(
       'burn',
       runtimeArgs,
-      sender,
+      deploySender,
+      this.networkName,
+      paymentAmount,
+      keys
+    );
+  }
+
+  public async transferFrom(
+    recipient: CLKeyParameters,
+    owner: CLKeyParameters,
+    ids: string[],
+    paymentAmount: string,
+    deploySender: CLPublicKey,
+    keys?: Keys.AsymmetricKey[]
+  ) {
+    const runtimeArgs = RuntimeArgs.fromMap({
+      recipient: CLValueBuilder.key(recipient),
+      sender: CLValueBuilder.key(owner),
+      token_ids: CLValueBuilder.list(ids.map(id => CLValueBuilder.u256(id))),
+    });
+
+    return this.contractClient.callEntrypoint(
+      'transfer_from',
+      runtimeArgs,
+      deploySender,
+      this.networkName,
+      paymentAmount,
+      keys
+    );
+  }
+
+  public async transfer(
+    recipient: CLKeyParameters,
+    ids: string[],
+    paymentAmount: string,
+    deploySender: CLPublicKey,
+    keys?: Keys.AsymmetricKey[]
+  ) {
+    const runtimeArgs = RuntimeArgs.fromMap({
+      recipient: CLValueBuilder.key(recipient),
+      token_ids: CLValueBuilder.list(ids.map(id => CLValueBuilder.u256(id))),
+    });
+
+    return this.contractClient.callEntrypoint(
+      'transfer',
+      runtimeArgs,
+      deploySender,
+      this.networkName,
+      paymentAmount,
+      keys
+    );
+  }
+
+  public async updateTokenMeta(
+    id: string,
+    meta: Map<string, string>,
+    paymentAmount: string,
+    deploySender: CLPublicKey,
+    keys?: Keys.AsymmetricKey[]
+  ) {
+    const runtimeArgs = RuntimeArgs.fromMap({
+      token_id: CLValueBuilder.u256(id),
+      token_meta: toCLMap(meta),
+    });
+
+    return this.contractClient.callEntrypoint(
+      'update_token_meta',
+      runtimeArgs,
+      deploySender,
       this.networkName,
       paymentAmount,
       keys
     );
   }
 }
+

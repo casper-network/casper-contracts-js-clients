@@ -1,7 +1,6 @@
 import { config } from "dotenv";
 config({ path: ".env.cep47" });
 import { CEP47Client } from "casper-cep47-js-client";
-// import { utils } from "casper-js-client-helper";
 import { parseTokenMeta, sleep, getDeploy, getAccountInfo, getAccountNamedKeyValue } from "../utils";
 import * as fs from "fs";
 
@@ -43,8 +42,6 @@ const KEYS = Keys.Ed25519.parseKeyFiles(
   `${MASTER_KEY_PAIR_PATH}/public_key.pem`,
   `${MASTER_KEY_PAIR_PATH}/secret_key.pem`
 );
-
-console.log(TOKEN_NAME!, CONTRACT_NAME!, TOKEN_SYMBOL!, TOKEN_META);
 
 const test = async () => {
   const cep47 = new CEP47Client(

@@ -1,7 +1,6 @@
 import { config } from "dotenv";
 config({ path: ".env.cep47" });
-import { CEP47Client } from "casper-cep47-js-client";
-// import { utils } from "casper-js-client-helper";
+import { CEP47Client, CEP47Events } from "casper-cep47-js-client";
 import { parseTokenMeta, sleep, getDeploy, getAccountInfo, getAccountNamedKeyValue } from "../utils";
 
 import {
@@ -10,10 +9,12 @@ import {
   CLPublicKey,
   CLAccountHash,
   CLPublicKeyType,
-  DeployUtil
+  DeployUtil,
+  EventStream,
+  EventName,
+  CLValueParsers,
+  CLMap,
 } from "casper-js-sdk";
-
-// const { CEP47Events } = constants;
 
 const {
   NODE_ADDRESS,
@@ -21,6 +22,7 @@ const {
   CHAIN_NAME,
   WASM_PATH,
   MASTER_KEY_PAIR_PATH,
+  USER_KEY_PAIR_PATH,
   TOKEN_NAME,
   CONTRACT_NAME,
   TOKEN_SYMBOL,
@@ -28,6 +30,7 @@ const {
   INSTALL_PAYMENT_AMOUNT,
   MINT_ONE_PAYMENT_AMOUNT,
   MINT_COPIES_PAYMENT_AMOUNT,
+  TRANSFER_ONE_PAYMENT_AMOUNT,
   BURN_ONE_PAYMENT_AMOUNT,
   MINT_ONE_META_SIZE,
   MINT_COPIES_META_SIZE,
@@ -41,33 +44,17 @@ const KEYS = Keys.Ed25519.parseKeyFiles(
   `${MASTER_KEY_PAIR_PATH}/secret_key.pem`
 );
 
+const KEYS_USER = Keys.Ed25519.parseKeyFiles(
+  `${USER_KEY_PAIR_PATH}/public_key.pem`,
+  `${USER_KEY_PAIR_PATH}/secret_key.pem`
+);
+
 const test = async () => {
   const cep47 = new CEP47Client(
     NODE_ADDRESS!,
     CHAIN_NAME!
   );
 
-  // let tokensOf: string[] = [];
-
-  // const listener = cep47.onEvent(
-  //   [
-  //     CEP47Events.MintOne,
-  //     CEP47Events.TransferToken,
-  //     CEP47Events.BurnOne,
-  //     CEP47Events.MetadataUpdate,
-  //   ],
-  //   (eventName, deploy, result) => {
-  //     if (deploy.success) {
-  //       console.log(`Successfull deploy of: ${eventName}, deployHash: ${deploy.deployHash}`);
-  //       console.log(result.value());
-  //     } else {
-  //       console.log(`Failed deploy of ${eventName}, deployHash: ${deploy.deployHash}`);
-  //       console.log(`Error: ${deploy.error}`);
-  //     }
-  //   }
-  // );
-
-  // await sleep(5 * 1000);
 
   let accountInfo = await getAccountInfo(NODE_ADDRESS!, KEYS.publicKey);
 
@@ -79,10 +66,53 @@ const test = async () => {
     `${CONTRACT_NAME!}_contract_hash`
   );
 
-  console.log(`... Contract Hash: ${contractHash}`);
+  const contractPackageHash = await getAccountNamedKeyValue(
+    accountInfo,
+    `contract_package_hash`
+  );
 
-  // We don't need hash- prefix so i'm removing it
-  await cep47.setContractHash(contractHash);
+  console.log(`... Contract Hash: ${contractHash}`);
+  console.log(`... Contract Package Hash: ${contractHash}`);
+
+  await cep47.setContractHash(contractHash, contractPackageHash);
+
+  await sleep(5 * 1000);
+
+  const es = new EventStream(EVENT_STREAM_ADDRESS!);
+
+  es.subscribe(EventName.DeployProcessed, (event) => {
+    if (event.body.DeployProcessed.execution_result.Success) {
+      const { transforms } =
+        event.body.DeployProcessed.execution_result.Success.effect;
+
+      const events = transforms.reduce((acc: any, val: any) => {
+        if (
+          val.transform.hasOwnProperty("WriteCLValue") &&
+          typeof val.transform.WriteCLValue.parsed === "object" &&
+          val.transform.WriteCLValue.parsed !== null
+        ) {
+          const maybeCLValue = CLValueParsers.fromJSON(
+            val.transform.WriteCLValue
+          );
+          const clValue = maybeCLValue.unwrap();
+          if (clValue && clValue instanceof CLMap) {
+            const hash = clValue.get(
+              CLValueBuilder.string("contract_package_hash")
+            );
+            const event = clValue.get(CLValueBuilder.string("event_type"));
+            if (hash && contractPackageHash === hash.value()) {
+              acc = [...acc, { name: event.value(), clValue }];
+            }
+          }
+        }
+        return acc;
+      }, []);
+
+      if (events.length) {
+        console.log("xxx", events);
+      }
+    }
+  });
 
   const name = await cep47.name();
   console.log(`... Contract name: ${name}`);
@@ -100,253 +130,203 @@ const test = async () => {
   //****************//
   //* Mint Section *//
   //****************//
-  //console.log("... Mint one token");
-  //const mintDeploy = await cep47.mint(
-  //  KEYS.publicKey,
-  //  ["1"],
-  //  [new Map([['number', 'one']])],
-  //  MINT_ONE_PAYMENT_AMOUNT!,
-  //  KEYS.publicKey,
-  //  [KEYS]
-  //);
+  console.log('\n*************************\n');
 
-  //const mintDeployHash = await mintDeploy.send(NODE_ADDRESS!);
+  console.log('... Mint token one \n');
 
-  //console.log("... Mint deploy hash: ", mintDeployHash);
+  const mintDeploy = await cep47.mint(
+    KEYS.publicKey,
+    ["1"],
+    [new Map([['number', 'one']])],
+    MINT_ONE_PAYMENT_AMOUNT!,
+    KEYS.publicKey,
+    [KEYS]
+  );
 
-  //await getDeploy(NODE_ADDRESS!, mintDeployHash);
-  //console.log("... Token minted successfully");
+  const mintDeployHash = await mintDeploy.send(NODE_ADDRESS!);
 
-  ////* Checks after mint *//
-  //const balanceOf = await cep47.balanceOf(KEYS.publicKey);
+  console.log("...... Mint deploy hash: ", mintDeployHash);
 
-  //console.log(balanceOf);
+  await getDeploy(NODE_ADDRESS!, mintDeployHash);
+  console.log("...... Token minted successfully");
 
-  //const ownerOfTokenOne = await cep47.getOwnerOf("1");
+  //* Checks after mint *//
+  const balanceOf1 = await cep47.balanceOf(KEYS.publicKey);
 
-  //console.log(ownerOfTokenOne);
+  console.log('...... Balance of master account: ', balanceOf1);
 
-  //const tokenOneMeta = await cep47.getTokenMeta("1");
+  const ownerOfTokenOne = await cep47.getOwnerOf("1");
 
-  //console.log(tokenOneMeta);
+  console.log('...... Owner of token one: ', ownerOfTokenOne);
 
-  const tokenByIndex = await cep47.getTokenByIndex(KEYS.publicKey, "0");
-  console.log(tokenByIndex);
+  const tokenOneMeta = await cep47.getTokenMeta("1");
 
-  const indexByToken = await cep47.getIndexByToken(KEYS.publicKey, "1");
-  console.log(indexByToken);
+  console.log('...... Token five metadata: ', tokenOneMeta);
 
-  ////********************//
-  ////* Approval section *//
-  ////********************//
-  //const approveDeploy = await cep47.approve(
-  //  CLPublicKey.fromHex("01a6dbc8c0866314c241fe4c3fd10b54670cfc91dc56bd4a0a48ff1aad968d60b8"),
-  //  ["1"],
-  //  MINT_ONE_PAYMENT_AMOUNT!,
-  //  KEYS.publicKey,
-  //  [KEYS]
-  //);
+  const indexByToken1 = await cep47.getIndexByToken(KEYS.publicKey, "1");
+  console.log('...... index of token one: ', indexByToken1);
 
-  //const approveDeployHash = await approveDeploy.send(NODE_ADDRESS!);
-
-  //console.log("... Approval deploy hash: ", approveDeployHash);
-
-  //await getDeploy(NODE_ADDRESS!, approveDeployHash);
-  //console.log("... Token approved successfully");
-
-  //** Checks after approval **//
-  // const allowanceOfTokenOne = await cep47.getAllowance(KEYS.publicKey, "1");
+  const tokenByIndex1 = await cep47.getTokenByIndex(KEYS.publicKey, indexByToken1);
+  console.log('...... token one id: ', tokenByIndex1);
 
   //****************//
   //* Burn section *//
   //****************//
-  // const burnDeploy = await cep47.burn(
-  //   KEYS.publicKey,
-  //   ["1"],
-  //   MINT_ONE_PAYMENT_AMOUNT!,
-  //   KEYS.publicKey,
-  //   [KEYS]
-  // );
+  console.log('\n*************************\n');
 
-  // const burnDeployHash = await burnDeploy.send(NODE_ADDRESS!);
+  console.log('... Burn token one \n');
 
-  // console.log("... Burn deploy hash: ", burnDeployHash);
+  const burnDeploy = await cep47.burn(
+    KEYS.publicKey,
+    ["1"],
+    MINT_ONE_PAYMENT_AMOUNT!,
+    KEYS.publicKey,
+    [KEYS]
+  );
 
-  // await getDeploy(NODE_ADDRESS!, burnDeployHash);
-  // console.log("... Token burned successfully");
+  const burnDeployHash = await burnDeploy.send(NODE_ADDRESS!);
 
-  // OLD
-  // const mintDeployHash = await cep47.mintOne(
-  //   KEYS,
-  //   KEYS.publicKey,
-  //   null,
-  //   new Map([["name", "Jan"]]),
-  //   MINT_ONE_PAYMENT_AMOUNT!,
-  //   900000
-  // );
-  // console.log("... Mint deploy hash: ", mintDeployHash);
+  console.log("... Burn deploy hash: ", burnDeployHash);
 
-  // // await getDeploy(NODE_ADDRESS!, mintDeployHash);
-  // // console.log("... Token minted successfully");
+  await getDeploy(NODE_ADDRESS!, burnDeployHash);
+  console.log("... Token burned successfully");
 
-  // const mintDeployHash2 = await cep47.mintOne(
-  //   KEYS,
-  //   KEYS.publicKey,
-  //   null,
-  //   new Map([["name", "Medha"]]),
-  //   MINT_ONE_PAYMENT_AMOUNT!,
-  //   900000,
-  //   [mintDeployHash]
-  // );
-  // console.log("... Mint deploy hash: ", mintDeployHash2);
-  
-  // await getDeploy(NODE_ADDRESS!, mintDeployHash2);
-  // console.log("... Token minted successfully");
+  //***************//
+  //* Mint Copies *//
+  //***************//
+  console.log('\n*************************\n');
 
-  // let tokensOf = await cep47.getTokensOf(KEYS.publicKey);
-  // console.log(`Tokens of faucet account`, tokensOf);
+  console.log('... Mint copies #1\n');
 
-  // totalSupply = await cep47.totalSupply();
-  // console.log(`... Total supply: ${totalSupply}`);
+  const mintCopiesDeploy = await cep47.mintCopies(
+    KEYS.publicKey,
+    ["2", "3", "4", "5"],
+    new Map([['number', 'from-series']]),
+    4,
+    MINT_COPIES_PAYMENT_AMOUNT!,
+    KEYS.publicKey,
+    [KEYS]
+  );
 
-  // tokensOf = await cep47.getTokensOf(KEYS.publicKey);
-  // console.log(tokensOf);
+  const mintCopiesDeployHash = await mintCopiesDeploy.send(NODE_ADDRESS!);
 
-  // let issuerOfToken = await cep47.getIssuerOf(tokensOf[0]);
-  // console.log(`... Issuer of token ${tokensOf[0]} is ${issuerOfToken}`);
+  console.log("...... Mint deploy hash: ", mintCopiesDeployHash);
 
-  // const mintManyDeployHash = await cep47.mintMany(
-  //   KEYS,
-  //   KEYS.publicKey,
-  //   [
-  //     new Map([["name", "one"]]),
-  //     new Map([["name", "two"]]),
-  //     new Map([["name", "three"]]),
-  //     new Map([["name", "four"]]),
-  //     new Map([["name", "five"]]),
-  //   ],
-  //   null,
-  //   MINT_COPIES_PAYMENT_AMOUNT!
-  // );
-  // console.log("... Mint Many deploy hash: ", mintManyDeployHash);
+  await getDeploy(NODE_ADDRESS!, mintCopiesDeployHash);
+  console.log("...... Token minted successfully");
 
-  // await getDeploy(NODE_ADDRESS!, mintManyDeployHash);
-  // console.log("... Many tokens minted successfully");
+  //* Checks after mint *//
+  const balanceOf2 = await cep47.balanceOf(KEYS.publicKey);
 
-  // totalSupply = await cep47.totalSupply();
-  // console.log(`... Total supply: ${totalSupply}`);
+  console.log('...... Balance of master account: ', balanceOf2);
 
-  // const mintCopiesDeployHash = await cep47.mintCopies(
-  //   KEYS,
-  //   KEYS.publicKey,
-  //   new Map([["name", "copied"]]),
-  //   ["A6", "A7", "A8", "A9", "A10"],
-  //   5,
-  //   MINT_COPIES_PAYMENT_AMOUNT!
-  // );
-  // console.log("... Mint Copies deploy hash: ", mintCopiesDeployHash);
+  let ownerOfTokenFive = await cep47.getOwnerOf("5");
 
-  // await getDeploy(NODE_ADDRESS!, mintCopiesDeployHash);
-  // console.log("... Copy tokens minted successfully");
+  console.log('...... Owner of token five: ', ownerOfTokenFive);
 
-  // let balance = await cep47.balanceOf(KEYS.publicKey);
-  // console.log(`... Balance of account ${KEYS.publicKey.toAccountHashStr()}`);
-  // console.log(`... Balance: ${balance}`);
+  const tokenFiveMeta = await cep47.getTokenMeta("5");
 
-  // tokensOf = await cep47.getTokensOf(KEYS.publicKey);
-  // console.log(`... Tokens of  ${KEYS.publicKey.toAccountHashStr()}`);
-  // console.log(`... Tokens: ${JSON.stringify(tokensOf, null, 2)}`);
+  console.log('...... Token five metadata: ', tokenFiveMeta);
 
-  // const tokenOneId = tokensOf[0]; 
+  const indexByToken5 = await cep47.getIndexByToken(KEYS.publicKey, "5");
+  console.log('...... index of token five: ', indexByToken5);
 
-  // let ownerOfTokenOne = await cep47.getOwnerOf(tokenOneId);
-  // console.log(`... Owner of token: ${tokenOneId}`);
-  // console.log(`... Owner: ${ownerOfTokenOne}`);
+  const tokenByIndex5 = await cep47.getTokenByIndex(KEYS.publicKey, indexByToken5);
+  console.log('...... token five id: ', tokenByIndex5);
 
-  // let tokenOneMetadata = await cep47.getTokenMeta(tokenOneId);
-  // console.log(`... Metadata of token: ${tokenOneId}`);
-  // console.log(`... Metadata: `);
-  // console.log(tokenOneMetadata);
+  //************//
+  //* Transfer *//
+  //************//
 
-  // const newTokenOneMetadata = new Map([
-  //   ["color", "red"],
-  //   ["flavour", "vanilla"],
-  // ]);
-  // let updatedTokenMetaDeployHash = await cep47.updateTokenMetadata(
-  //   KEYS,
-  //   tokenOneId,
-  //   newTokenOneMetadata,
-  //   MINT_ONE_PAYMENT_AMOUNT!
-  // );
-  // console.log(
-  //   "... Update token metadata deploy hash: ",
-  //   updatedTokenMetaDeployHash
-  // );
-  // await getDeploy(NODE_ADDRESS!, updatedTokenMetaDeployHash);
-  // console.log("... Token metadata updated sucessfully");
+  console.log('\n*************************\n');
 
-  // tokenOneMetadata = await cep47.getTokenMeta(tokenOneId);
-  // console.log(`... Metadata of token: ${tokenOneId}`);
-  // console.log(`... Metadata: `);
-  // console.log(tokenOneMetadata);
+  console.log('... Transfer #1\n');
 
-  // totalSupply = await cep47.totalSupply();
-  // console.log(`... Total supply: ${totalSupply}`);
+  let ownerOfTokenTwo = await cep47.getOwnerOf("2");
+  console.log(`...... Owner of token "2" is ${ownerOfTokenTwo}`);
 
-  // const burnTokenOneDeployHash = await cep47.burnOne(
-  //   KEYS,
-  //   new CLAccountHash(KEYS.publicKey.toAccountHash()),
-  //   tokenOneId,
-  //   BURN_ONE_PAYMENT_AMOUNT!
-  // );
-  // console.log("... Burn one deploy hash: ", burnTokenOneDeployHash);
-  // await getDeploy(NODE_ADDRESS!, burnTokenOneDeployHash);
-  // console.log("... Token burnt successfully");
+  const transferOneRecipient = CLPublicKey.fromHex("016e5ee177b4008a538d5c9df7f8beb392a890a06418e5b9729231b077df9d7215");
+  const transferOneDeploy = await cep47.transfer(transferOneRecipient, ["2"], TRANSFER_ONE_PAYMENT_AMOUNT!, KEYS.publicKey, [KEYS]);
 
-  // totalSupply = await cep47.totalSupply();
-  // console.log(`... Total supply: ${totalSupply}`);
+  console.log(`...... Transfer from ${KEYS.publicKey.toAccountHashStr()} to ${transferOneRecipient.toAccountHashStr()}`);
 
-  // tokensOf = await cep47.getTokensOf(KEYS.publicKey);
-  // let listOfTokensToBurn = tokensOf.map((t: any) => t).slice(0, 3);
+  const transferOneHash = await transferOneDeploy.send(NODE_ADDRESS!);
 
-  // const burnManyTokensDeployHash = await cep47.burnMany(
-  //   KEYS,
-  //   new CLAccountHash(KEYS.publicKey.toAccountHash()),
-  //   listOfTokensToBurn,
-  //   String(parseInt(BURN_ONE_PAYMENT_AMOUNT!) * listOfTokensToBurn.length)
-  // );
-  // console.log("... Burn many deploy hash: ", burnManyTokensDeployHash);
-  // await getDeploy(NODE_ADDRESS!, burnManyTokensDeployHash);
-  // console.log("... Many tokens burnt successfully");
+  console.log("...... Transfer #1 deploy hash: ", transferOneHash);
 
-  // totalSupply = await cep47.totalSupply();
-  // console.log(`... Total supply: ${totalSupply}`);
+  await getDeploy(NODE_ADDRESS!, transferOneHash);
+  console.log("...... Token transfered successfully");
 
-  // const receiverAccount = CLPublicKey.fromHex(RECEIVER_ACCOUNT_ONE!);
+  ownerOfTokenTwo = await cep47.getOwnerOf("2");
+  console.log(`...... Owner of token "2" is ${ownerOfTokenTwo}`);
 
-  // tokensOf = await cep47.getTokensOf(KEYS.publicKey);
+  console.log('\n*************************\n');
 
-  // const tokensToTransfer = tokensOf.map((t: any) => t).slice(0, 2);
 
-  // const transferManyDeployHash = await cep47.transferManyTokens(
-  //   KEYS,
-  //   receiverAccount,
-  //   tokensToTransfer,
-  //   MINT_COPIES_PAYMENT_AMOUNT!
-  // );
-  // console.log(
-  //   `... Transfer of ${
-  //     tokensToTransfer.length
-  //   } tokens to account: ${receiverAccount.toAccountHashStr()}`
-  // );
-  // console.log("... Transfer Many deploy hash: ", transferManyDeployHash);
+  //********************//
+  //* Approval section *//
+  //********************//
+  console.log('\n*************************\n');
 
-  // await getDeploy(NODE_ADDRESS!, transferManyDeployHash);
-  // console.log("Transfer Many successfull");
+  console.log('... Approve\n');
 
-  // // let tokensOfAccountOne = await cep47.getTokensOf(receiverAccount);
-  // console.log(`... Tokens of  ${receiverAccount.toAccountHashStr()}`);
-  // console.log(`... Tokens: ${JSON.stringify(tokensOfAccountOne, null, 2)}`);
+  const allowedAccount = KEYS_USER!.publicKey;
+
+  const approveDeploy = await cep47.approve(
+    allowedAccount,
+    ["5"],
+    MINT_ONE_PAYMENT_AMOUNT!,
+    KEYS.publicKey,
+    [KEYS]
+  );
+
+  const approveDeployHash = await approveDeploy.send(NODE_ADDRESS!);
+
+  console.log("...... Approval deploy hash: ", approveDeployHash);
+
+  await getDeploy(NODE_ADDRESS!, approveDeployHash);
+  console.log("...... Token approved successfully");
+
+  // ** Checks after approval **//
+  const allowanceOfTokenFive = await cep47.getAllowance(KEYS.publicKey, "5");
+  console.log(`...... Allowance of token 5 ${allowanceOfTokenFive}`);
+
+
+  //*****************//
+  //* Transfer From *//
+  //*****************//
+
+  console.log('\n*************************\n');
+
+  console.log('... Transfer From #1\n');
+
+  ownerOfTokenFive = await cep47.getOwnerOf("5");
+  console.log(`...... Owner of token "5" is ${ownerOfTokenFive}`);
+
+  // NOTE: Some random address
+  const transferFromRecipient = CLPublicKey.fromHex("019548b4f31b06d1ce81ab4fd90c9a88e4a5aee9d71cac97044280905707248da4");
+
+  console.log(`...... Transfer from ${KEYS.publicKey.toAccountHashStr()} to ${transferFromRecipient.toAccountHashStr()}`);
+
+  const transferFromDeploy = await cep47.transferFrom(
+    transferFromRecipient,
+    KEYS.publicKey,
+    ["5"],
+    TRANSFER_ONE_PAYMENT_AMOUNT!,
+    KEYS_USER.publicKey, [KEYS_USER]);
+
+
+  const transferFromHash = await transferFromDeploy.send(NODE_ADDRESS!);
+
+  console.log("...... Transfer From #1 deploy hash: ", transferFromHash);
+
+  await getDeploy(NODE_ADDRESS!, transferFromHash);
+  console.log("...... Token transfered successfully");
+
+  ownerOfTokenFive = await cep47.getOwnerOf("5");
+  console.log(`...... Owner of token "5" is ${ownerOfTokenFive}`);
+
+  console.log('\n*************************\n');
 };
 
 test();

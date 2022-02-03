@@ -1,8 +1,3 @@
-// import * as constants from "./constants";
-// import CEP47Client from "./cep47client";
+import { CEP47Client, CEP47Events } from "./new";
 
-// export { CEP47Client, constants };
-//
-import { CEP47Client } from "./new";
-
-export { CEP47Client };
+export { CEP47Client, CEP47Events };
