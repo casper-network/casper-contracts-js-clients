@@ -72,7 +72,7 @@ const test = async () => {
   );
 
   console.log(`... Contract Hash: ${contractHash}`);
-  console.log(`... Contract Package Hash: ${contractHash}`);
+  console.log(`... Contract Package Hash: ${contractPackageHash}`);
 
   await cep47.setContractHash(contractHash, contractPackageHash);
 
@@ -95,12 +95,15 @@ const test = async () => {
             val.transform.WriteCLValue
           );
           const clValue = maybeCLValue.unwrap();
+          console.log(clValue);
           if (clValue && clValue instanceof CLMap) {
             const hash = clValue.get(
               CLValueBuilder.string("contract_package_hash")
             );
+            console.log(hash);
             const event = clValue.get(CLValueBuilder.string("event_type"));
-            if (hash && contractPackageHash === hash.value()) {
+            console.log(event);
+            if (hash && contractPackageHash.split(5) === hash.value()) {
               acc = [...acc, { name: event.value(), clValue }];
             }
           }
@@ -113,6 +116,8 @@ const test = async () => {
       }
     }
   });
+
+  es.start();
 
   const name = await cep47.name();
   console.log(`... Contract name: ${name}`);
