@@ -85,13 +85,15 @@ const test = async () => {
       eventNames: [
         CEP47Events.MintOne,
         CEP47Events.TransferToken,
-        CEP47Events.BurnOne
+        CEP47Events.BurnOne,
+        CEP47Events.MetadataUpdate,
+        CEP47Events.ApproveToken
       ]
     }, event);
 
-    if (parsedEvents) {
+    if (parsedEvents.success) {
       console.log("*** EVENT ***");
-      console.log(parsedEvents);
+      console.log(parsedEvents.data);
       console.log("*** ***");
     }
   });
@@ -334,7 +336,7 @@ const test = async () => {
 
   const updateMetadataHash = await updateMetadataDeploy.send(NODE_ADDRESS!);
 
-  console.log("...... Update metadata deploy hash: ", updateMetadataDeploy);
+  console.log("...... Update metadata deploy hash: ", updateMetadataHash);
 
   await getDeploy(NODE_ADDRESS!, updateMetadataHash);
   console.log("...... Token metadata updated successfully");

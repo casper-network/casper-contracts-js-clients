@@ -1,4 +1,5 @@
 import {
+  CLValue,
   CLPublicKey,
   CLKey,
   CLMap,
@@ -26,7 +27,8 @@ export enum CEP47Events {
   MintOne = "cep47_mint_one",
   TransferToken = "cep47_transfer_token",
   BurnOne = "cep47_burn_one",
-  MetadataUpdate = 'cep47_metadata_update'
+  MetadataUpdate = 'cep47_metadata_update',
+  ApproveToken = 'cep47_approve_token'
 }
 
 export const CEP47EventParser = (
@@ -75,6 +77,16 @@ export const CEP47EventParser = (
 
   return null;
 };
+
+const keyAndValueToHex = (key: CLValue, value: CLValue) => {
+  const aBytes = CLValueParsers.toBytes(key).unwrap();
+  const bBytes = CLValueParsers.toBytes(value).unwrap();
+
+  const blaked = blake.blake2b(concat([aBytes, bBytes]), undefined, 32);
+  const hex = Buffer.from(blaked).toString('hex');
+
+  return hex;
+}
 
 export class CEP47Client {
   casperClient: CasperClient;
@@ -152,12 +164,7 @@ export class CEP47Client {
   }
 
   public async getTokenByIndex(owner: CLPublicKey, index: string) {
-    const ownerBytes = CLValueParsers.toBytes(CLValueBuilder.key(owner)).unwrap();
-    const indexBytes = CLValueParsers.toBytes(CLValueBuilder.u256(index)).unwrap();
-
-    const blaked = blake.blake2b(concat([ownerBytes, indexBytes]), undefined, 32);
-    const hex = Buffer.from(blaked).toString('hex');
-
+    const hex = keyAndValueToHex(CLValueBuilder.key(owner), CLValueBuilder.u256(index));
     const result = await this.contractClient.queryContractDictionary('owned_tokens_by_index', hex);
 
     const maybeValue = result.value().unwrap();
@@ -169,12 +176,7 @@ export class CEP47Client {
     owner: CLKeyParameters,
     tokenId: string
   ) {
-    const ownerBytes = CLValueParsers.toBytes(CLValueBuilder.key(owner)).unwrap();
-    const idBytes = CLValueParsers.toBytes(CLValueBuilder.u256(tokenId)).unwrap();
-
-    const blaked = blake.blake2b(concat([ownerBytes, idBytes]), undefined, 32);
-    const hex = Buffer.from(blaked).toString('hex');
-
+    const hex = keyAndValueToHex(CLValueBuilder.key(owner), CLValueBuilder.u256(tokenId));
     const result = await this.contractClient.queryContractDictionary('owned_indexes_by_token', hex);
 
     const maybeValue = result.value().unwrap();
@@ -186,12 +188,7 @@ export class CEP47Client {
     owner: CLKeyParameters,
     tokenId: string
   ) {
-    const ownerBytes = CLValueParsers.toBytes(CLValueBuilder.key(owner)).unwrap();
-    const idBytes = CLValueParsers.toBytes(CLValueBuilder.string(tokenId)).unwrap();
-
-    const blaked = blake.blake2b(concat([ownerBytes, idBytes]), undefined, 32);
-    const hex = Buffer.from(blaked).toString('hex');
-
+    const hex = keyAndValueToHex(CLValueBuilder.key(owner), CLValueBuilder.string(tokenId));
     const result = await this.contractClient.queryContractDictionary('allowances', hex);
 
     const maybeValue = result.value().unwrap();
