@@ -1,6 +1,6 @@
 import { config } from "dotenv";
 config({ path: ".env.cep47" });
-import { CEP47Client, CEP47Events } from "casper-cep47-js-client";
+import { CEP47Client, CEP47Events, CEP47EventParser } from "casper-cep47-js-client";
 import { parseTokenMeta, sleep, getDeploy, getAccountInfo, getAccountNamedKeyValue } from "../utils";
 
 import {
@@ -55,7 +55,6 @@ const test = async () => {
     CHAIN_NAME!
   );
 
-
   let accountInfo = await getAccountInfo(NODE_ADDRESS!, KEYS.publicKey);
 
   console.log(`... Account Info: `);
@@ -81,32 +80,19 @@ const test = async () => {
   const es = new EventStream(EVENT_STREAM_ADDRESS!);
 
   es.subscribe(EventName.DeployProcessed, (event) => {
-    if (event.body.DeployProcessed.execution_result.Success) {
-      const { transforms } =
-        event.body.DeployProcessed.execution_result.Success.effect;
+    const parsedEvents = CEP47EventParser({
+      contractPackageHash, 
+      eventNames: [
+        CEP47Events.MintOne,
+        CEP47Events.TransferToken,
+        CEP47Events.BurnOne
+      ]
+    }, event);
 
-      const events = transforms.reduce((acc: any, val: any) => {
-        if (
-          val.transform.hasOwnProperty("WriteCLValue") &&
-          typeof val.transform.WriteCLValue.parsed === "object" &&
-          val.transform.WriteCLValue.parsed !== null
-        ) {
-          const maybeCLValue = CLValueParsers.fromJSON(
-            val.transform.WriteCLValue
-          );
-          const clValue = maybeCLValue.unwrap();
-          if (clValue && clValue instanceof CLMap) {
-            const hash = clValue.get(
-              CLValueBuilder.string("contract_package_hash")
-            );
-            const event = clValue.get(CLValueBuilder.string("event_type"));
-            if (hash && contractPackageHash.split(5) === hash.value()) {
-              acc = [...acc, { name: event.value(), clValue }];
-            }
-          }
-        }
-        return acc;
-      }, []);
+    if (parsedEvents) {
+      console.log("*** EVENT ***");
+      console.log(parsedEvents);
+      console.log("*** ***");
     }
   });
 
@@ -136,7 +122,7 @@ const test = async () => {
     KEYS.publicKey,
     ["1"],
     [new Map([['number', 'one']])],
-    "ABC",
+    MINT_ONE_PAYMENT_AMOUNT!,
     KEYS.publicKey,
     [KEYS]
   );
@@ -323,6 +309,39 @@ const test = async () => {
 
   ownerOfTokenFive = await cep47.getOwnerOf("5");
   console.log(`...... Owner of token "5" is ${ownerOfTokenFive}`);
+
+  console.log('\n*************************\n');
+
+  //*******************//
+  //* Update Metadata *//
+  //*******************//
+
+  console.log('\n*************************\n');
+
+  console.log('... Update metadata of token 4 \n');
+
+  let tokenFourMeta = await cep47.getTokenMeta("4");
+
+  console.log('...... Token 4 metadata: ', tokenFourMeta);
+
+  const updateMetadataDeploy = await cep47.updateTokenMeta(
+    "4",
+    new Map([["name", "four"]]),
+    TRANSFER_ONE_PAYMENT_AMOUNT!,
+    KEYS_USER.publicKey, 
+    [KEYS_USER]
+  );
+
+  const updateMetadataHash = await updateMetadataDeploy.send(NODE_ADDRESS!);
+
+  console.log("...... Update metadata deploy hash: ", updateMetadataDeploy);
+
+  await getDeploy(NODE_ADDRESS!, updateMetadataHash);
+  console.log("...... Token metadata updated successfully");
+
+  tokenFourMeta = await cep47.getTokenMeta("4");
+
+  console.log('...... Token 4 metadata: ', tokenFourMeta);
 
   console.log('\n*************************\n');
 };
