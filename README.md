@@ -48,9 +48,9 @@ Before running this example client, you must specify all the environment variabl
 **Steps:**
 
 - Open the [CEP-47 client example](packages/cep47-client)
-- Set the environment variables in the `.env.erc20` file
+- Set the environment variables in the `.env.cep47` file
 - Run the [install script](e2e/cep47/install.ts) 
-- View the [client usage example](e2e/cep47/installed.ts)
+- View the [client usage example](e2e/cep47/usage.ts)
 - Install the contract:
 
     ```
@@ -60,5 +60,5 @@ Before running this example client, you must specify all the environment variabl
 - Run the test example:
 
     ```
-    npm run e2e:cep47:installed
+    npm run e2e:cep47:usage
     ```

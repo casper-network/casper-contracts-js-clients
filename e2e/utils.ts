@@ -1,4 +1,4 @@
-import { CasperClient, Keys } from "casper-js-sdk";
+import { CasperClient, CLPublicKey, Keys, CasperServiceByJsonRPC } from "casper-js-sdk";
 
 export const parseTokenMeta = (str: string): Array<[string, string]> =>
   str.split(",").map((s) => {
@@ -50,3 +50,26 @@ export const getDeploy = async (NODE_URL: string, deployHash: string) => {
   throw Error("Timeout after " + i + "s. Something's wrong");
 };
 
+export const getAccountInfo: any = async (
+  nodeAddress: string,
+  publicKey: CLPublicKey
+) => {
+  const client = new CasperServiceByJsonRPC(nodeAddress);
+  const stateRootHash = await client.getStateRootHash();
+  const accountHash = publicKey.toAccountHashStr();
+  const blockState = await client.getBlockState(stateRootHash, accountHash, []);
+  return blockState.Account;
+};
+
+/**
+ * Returns a value under an on-chain account's storage.
+ * @param accountInfo - On-chain account's info.
+ * @param namedKey - A named key associated with an on-chain account.
+ */
+export const getAccountNamedKeyValue = (accountInfo: any, namedKey: string) => {
+  const found = accountInfo.namedKeys.find((i: any) => i.name === namedKey);
+  if (found) {
+    return found.key;
+  }
+  return undefined;
+};

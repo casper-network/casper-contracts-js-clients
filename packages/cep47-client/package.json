@@ -1,7 +1,6 @@
 {
   "name": "casper-cep47-js-client",
-  "version": "0.5.5",
-  "description": "> TODO: description",
+  "version": "1.0.0",
   "author": "Jan Hoffmann <jan@casperlabs.io>",
   "homepage": "",
   "license": "ISC",
@@ -14,8 +13,7 @@
     "access": "public"
   },
   "dependencies": {
-    "casper-js-client-helper": "file:../client-helper",
-    "casper-js-sdk": "2.7.6"
+    "casper-js-sdk": "2.8.0"
   },
   "scripts": {
     "dist": "npm run clean && npm run build",
