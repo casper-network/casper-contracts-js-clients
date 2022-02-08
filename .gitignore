@@ -4,3 +4,4 @@ dist/
 .env.cep47
 .env.erc20
 .npmrc
+package-lock.json
