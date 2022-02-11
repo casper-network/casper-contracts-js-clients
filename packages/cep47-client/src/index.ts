@@ -16,6 +16,14 @@ import blake from "blakejs";
 
 const { Contract, toCLMap, fromCLMap } = Contracts;
 
+/**
+  * CEP47 installation params.
+  *
+  * @param name Name of the token.
+  * @param contractName Name of the contract.
+  * @param symbol Symbol of the token.
+  * @param meta A Map built with Strings containing contract metadata.
+  */
 export interface CEP47InstallArgs {
   name: string,
   contractName: string,
@@ -23,6 +31,9 @@ export interface CEP47InstallArgs {
   meta: Map<string, string>
 };
 
+/**
+  * CEP47 All Possible Events.
+  */
 export enum CEP47Events {
   MintOne = "cep47_mint_one",
   TransferToken = "cep47_transfer_token",
@@ -31,6 +42,16 @@ export enum CEP47Events {
   ApproveToken = 'cep47_approve_token'
 }
 
+/**
+  * CEP47 Event Parser.
+  * It can be used with `EventStream` from `casper-js-sdk`
+  *
+  * @param params Object containing contractPackageHash (hash- prefixed) and eventNames (list of CEP47Events)
+  * @param value A data object returned by EventStream.
+  *
+  * @returns Object containing { error: boolean, success: boolean, data: Object }.
+  * If success is set to true you can be sure that data contains list of parsed events.
+  */
 export const CEP47EventParser = (
   {
     contractPackageHash,
@@ -97,6 +118,17 @@ export class CEP47Client {
     this.contractClient = new Contract(this.casperClient);
   }
 
+  /**
+   * Installs the CEP47 contract.
+   *
+   * @param wasm Uin8Array with contents of the WASM file.
+   * @param args CEP47 installation args (see CEP47InstallArgs)
+   * @param paymentAmount The payment amount that will be used for this deploy.
+   * @param deploySender PublicKey of deploy sender.
+   * @param keys Optional parameter containing list of keys that can be used to sign the deploy.
+   *
+   * @returns Deploy that can be then signed and send to the network. 
+   */
   public install(
     wasm: Uint8Array,
     args: CEP47InstallArgs,
@@ -114,26 +146,59 @@ export class CEP47Client {
     return this.contractClient.install(wasm, runtimeArgs, paymentAmount, deploySender, this.networkName, keys || []);
   }
 
+  /**
+   * Sets the contract-hash of a client.
+   *
+   * @param contractHash Contract hash.
+   * @param contractPackageHash Contract package hash.
+   */
   public setContractHash(contractHash: string, contractPackageHash?: string) {
     this.contractClient.setContractHash(contractHash, contractPackageHash);
   }
   
+  /**
+   * Returns the contract name.
+   *
+   * @returns String
+   */
   public async name() {
     return this.contractClient.queryContractData(['name']);
   }
 
+  /**
+   * Returns the contract symbol. 
+   *
+   * @returns String
+   */
   public async symbol() {
     return this.contractClient.queryContractData(['symbol']);
   }
 
+  /**
+   * Returns the contract meta.
+   *
+   * @returns String
+   */
   public async meta() {
     return this.contractClient.queryContractData(['meta']);
   }
 
+  /**
+   * Returns the contract totalSupply.
+   *
+   * @returns String
+   */
   public async totalSupply() {
     return this.contractClient.queryContractData(['total_supply']);
   }
   
+  /**
+   * Returns the balance of tokens assigned to specific public key.
+   *
+   * @param account CLPublicKey of account that you want to check.
+   *
+   * @returns String containing the number of tokens stored at this account.
+   */
   public async balanceOf(account: CLPublicKey) {
     const result = await this.contractClient
       .queryContractDictionary('balances', account.toAccountHashStr().slice(13));
@@ -143,6 +208,13 @@ export class CEP47Client {
     return maybeValue.value().toString();
   }
 
+  /**
+   * Returns the owner of specific token.
+   *
+   * @param tokenId String an Id of a token that you want to check.
+   *
+   * @returns String containing the prefixed account-hash of account owning this specific token.
+   */
   public async getOwnerOf(tokenId: string) {
     const result = await this.contractClient
       .queryContractDictionary('owners', tokenId);
@@ -154,6 +226,13 @@ export class CEP47Client {
     )}`;
   }
 
+  /**
+   * Returns the meta of specific token.
+   *
+   * @param tokenId String an Id of a token that you want to check.
+   *
+   * @returns Map containing all the metadata related to this specific token.
+   */
   public async getTokenMeta(tokenId: string) {
     const result = await this.contractClient
       .queryContractDictionary('metadata', tokenId);
@@ -163,6 +242,14 @@ export class CEP47Client {
     return fromCLMap(maybeValue);
   }
 
+  /**
+   * Returns the tokenId of specific token assigned to an account queried by index.
+   *
+   * @param owner CLPublicKey of owner that you want to check.
+   * @param index String which represents an index you want to check
+   *
+   * @returns String Id of a token.
+   */
   public async getTokenByIndex(owner: CLPublicKey, index: string) {
     const hex = keyAndValueToHex(CLValueBuilder.key(owner), CLValueBuilder.u256(index));
     const result = await this.contractClient.queryContractDictionary('owned_tokens_by_index', hex);
@@ -172,6 +259,14 @@ export class CEP47Client {
     return maybeValue.value().toString();
   }
 
+  /**
+   * Returns the index of specific token assigned to an account queried by id.
+   *
+   * @param owner CLPublicKey of owner that you want to check.
+   * @param tokenId String which represents tokenId you want to check
+   *
+   * @returns String index of a token at this specific account.
+   */
   public async getIndexByToken(
     owner: CLKeyParameters,
     tokenId: string
@@ -184,6 +279,14 @@ export class CEP47Client {
     return maybeValue.value().toString();
   }
 
+  /**
+   * Returns the allowance that is related with a specific token.
+   *
+   * @param owner CLPublicKey of owner of a token.
+   * @param tokenId String which represents tokenId you want to check
+   *
+   * @returns String containing the prefixed account-hash of account owning this specific token.
+   */
   public async getAllowance(
     owner: CLKeyParameters,
     tokenId: string
