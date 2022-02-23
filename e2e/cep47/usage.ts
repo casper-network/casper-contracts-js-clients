@@ -91,7 +91,7 @@ const test = async () => {
       ]
     }, event);
 
-    if (parsedEvents.success) {
+    if (parsedEvents && parsedEvents.success) {
       console.log("*** EVENT ***");
       console.log(parsedEvents.data);
       console.log("*** ***");
