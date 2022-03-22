@@ -109,7 +109,7 @@ export const contractSimpleGetter = async (
     key
   );
 
-  if (clValue && clValue.CLValue instanceof CLValue) {
+  if (clValue && clValue.CLValue.isCLValue) {
     return clValue.CLValue!.value();
   } else {
     throw Error("Invalid stored value");
