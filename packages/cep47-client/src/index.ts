@@ -9,7 +9,8 @@ import {
   Keys,
   CLKeyParameters,
   CLValueBuilder,
-  CLValueParsers 
+  CLValueParsers,
+  CLTypeTag
 } from "casper-js-sdk";
 import { concat } from "@ethersproject/bytes";
 import blake from "blakejs";
@@ -52,11 +53,11 @@ export const CEP47EventParser = (
               val.transform.WriteCLValue
             );
             const clValue = maybeCLValue.unwrap();
-            if (clValue && clValue instanceof CLMap) {
-              const hash = clValue.get(
+            if (clValue && clValue.clType().tag === CLTypeTag.Map) {
+              const hash = (clValue as CLMap<CLValue, CLValue>).get(
                 CLValueBuilder.string("contract_package_hash")
               );
-              const event = clValue.get(CLValueBuilder.string("event_type"));
+              const event = (clValue as CLMap<CLValue, CLValue>).get(CLValueBuilder.string("event_type"));
               if (
                 hash &&
                 // NOTE: Calling toLowerCase() because current JS-SDK doesn't support checksumed hashes and returns all lower case value

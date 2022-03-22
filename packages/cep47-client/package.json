@@ -13,7 +13,7 @@
     "access": "public"
   },
   "dependencies": {
-    "casper-js-sdk": "2.8.0"
+    "casper-js-sdk": "^2.9.1"
   },
   "scripts": {
     "dist": "npm run clean && npm run build",
