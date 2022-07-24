@@ -17,6 +17,8 @@ Before running an e2e test, run `npm i' inside the project's root directory:
 ```
 cd casper-erc20-js-client
 npm i
+npm run bootstrap
+npm run dist
 ```
 
 ### ERC-20 client usage
