@@ -20,6 +20,6 @@
     "test": "echo \"add tests\" && exit 0"
   },
   "dependencies": {
-    "casper-js-sdk": "2.9.1"
+    "casper-js-sdk": "2.10.2"
   }
 }
