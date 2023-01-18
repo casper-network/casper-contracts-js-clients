@@ -67,7 +67,7 @@ const test = async () => {
 
   const contractPackageHash = await getAccountNamedKeyValue(
     accountInfo,
-    `contract_package_hash`
+    `${CONTRACT_NAME!}_contract_package_hash`
   );
 
   console.log(`... Contract Hash: ${contractHash}`);
