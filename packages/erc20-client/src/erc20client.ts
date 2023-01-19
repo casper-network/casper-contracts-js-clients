@@ -16,7 +16,6 @@ import {
   Keys,
   RuntimeArgs,
 } from "casper-js-sdk";
-import { Some, None } from "ts-results";
 import * as blake from "blakejs";
 import { concat } from "@ethersproject/bytes";
 import { CasperContractClient, constants, utils, helpers, types } from "casper-js-client-helper";

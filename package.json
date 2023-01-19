@@ -21,7 +21,6 @@
   "author": "Jan Hoffmann <jan@casperlabs.io>",
   "license": "ISC",
   "dependencies": {
-    "@casperlabs/ts-results": "^3.3.5",
     "casper-cep47-js-client": "file:./packages/cep47-client",
     "casper-erc20-js-client": "file:./packages/erc20-client",
     "casper-js-client-helper": "file:./packages/client-helper",
