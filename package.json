@@ -4,7 +4,7 @@
   "private": true,
   "devDependencies": {
     "dotenv": "^10.0.0",
-    "lerna": "^4.0.0",
+    "lerna": "^6.4.1",
     "typescript": "^4.4.3"
   },
   "scripts": {
@@ -21,10 +21,10 @@
   "author": "Jan Hoffmann <jan@casperlabs.io>",
   "license": "ISC",
   "dependencies": {
-    "casper-js-sdk": "2.9.1",
-    "ts-node": "^10.2.1",
-    "casper-js-client-helper": "file:./packages/client-helper",
     "casper-cep47-js-client": "file:./packages/cep47-client",
-    "casper-erc20-js-client": "file:./packages/erc20-client"
+    "casper-erc20-js-client": "file:./packages/erc20-client",
+    "casper-js-client-helper": "file:./packages/client-helper",
+    "casper-js-sdk": "2.10.2",
+    "ts-node": "^10.2.1"
   }
 }

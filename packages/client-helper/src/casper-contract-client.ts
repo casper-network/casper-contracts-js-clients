@@ -16,7 +16,6 @@ import {
   Keys,
   RuntimeArgs,
 } from "casper-js-sdk";
-import { Some, None } from "ts-results";
 import { DEFAULT_TTL } from "./constants";
 import * as utils from "./helpers/utils";
 import {
