@@ -17,7 +17,7 @@ import blake from "blakejs";
 const { Contract, toCLMap, fromCLMap } = Contracts;
 
 /**
-  * CEP47 installation params.
+  * CEP47 installation parameters.
   *
   * @param name Name of the token.
   * @param contractName Name of the contract.
@@ -32,7 +32,7 @@ export interface CEP47InstallArgs {
 };
 
 /**
-  * CEP47 All Possible Events.
+  * CEP47 possible events.
   */
 export enum CEP47Events {
   MintOne = "cep47_mint_one",
@@ -43,14 +43,14 @@ export enum CEP47Events {
 }
 
 /**
-  * CEP47 Event Parser.
-  * It can be used with `EventStream` from `casper-js-sdk`
+  * CEP47 event parser.
+  * It can be used with the `EventStream` from the `casper-js-sdk`.
   *
-  * @param params Object containing contractPackageHash (hash- prefixed) and eventNames (list of CEP47Events)
-  * @param value A data object returned by EventStream.
+  * @param params Object containing a contractPackageHash (prefixed with "hash-") and eventNames (a list of CEP47Events).
+  * @param value A data object returned by the EventStream.
   *
   * @returns Object containing { error: boolean, success: boolean, data: Object }.
-  * If success is set to true you can be sure that data contains list of parsed events.
+  * If success is set to true, the data object contains a list of parsed events.
   */
 export const CEP47EventParser = (
   {
@@ -80,8 +80,8 @@ export const CEP47EventParser = (
               const event = clValue.get(CLValueBuilder.string("event_type"));
               if (
                 hash &&
-                // NOTE: Calling toLowerCase() because current JS-SDK doesn't support checksumed hashes and returns all lower case value
-                // Remove it after updating SDK
+                // NOTE: Calling toLowerCase() because currently the JS-SDK doesn't support checksumed hashes and returns all lower-case values
+                // Remove it after updating the SDK
                 hash.value() === contractPackageHash.slice(5).toLowerCase() &&
                 event &&
                 eventNames.includes(event.value())
@@ -122,12 +122,12 @@ export class CEP47Client {
    * Installs the CEP47 contract.
    *
    * @param wasm Uin8Array with contents of the WASM file.
-   * @param args CEP47 installation args (see CEP47InstallArgs)
+   * @param args CEP47 installation args (see CEP47InstallArgs).
    * @param paymentAmount The payment amount that will be used for this deploy.
-   * @param deploySender PublicKey of deploy sender.
-   * @param keys Optional parameter containing list of keys that can be used to sign the deploy.
+   * @param deploySender The PublicKey of the Deploy sender.
+   * @param keys Optional parameter containing a list of keys that can be used to sign the deploy.
    *
-   * @returns Deploy that can be then signed and send to the network. 
+   * @returns Deploy that can be signed and sent to the network. 
    */
   public install(
     wasm: Uint8Array,
@@ -147,7 +147,7 @@ export class CEP47Client {
   }
 
   /**
-   * Sets the contract-hash of a client.
+   * Sets the contract hash of a client.
    *
    * @param contractHash Contract hash.
    * @param contractPackageHash Contract package hash.
@@ -175,7 +175,7 @@ export class CEP47Client {
   }
 
   /**
-   * Returns the contract meta.
+   * Returns the contract metadata.
    *
    * @returns String
    */
@@ -184,7 +184,7 @@ export class CEP47Client {
   }
 
   /**
-   * Returns the contract totalSupply.
+   * Returns the contract total supply.
    *
    * @returns String
    */
@@ -195,9 +195,9 @@ export class CEP47Client {
   /**
    * Returns the balance of tokens assigned to specific public key.
    *
-   * @param account CLPublicKey of account that you want to check.
+   * @param account CLPublicKey of the account.
    *
-   * @returns String containing the number of tokens stored at this account.
+   * @returns String containing the number of tokens stored for this account.
    */
   public async balanceOf(account: CLPublicKey) {
     const result = await this.contractClient
@@ -209,11 +209,11 @@ export class CEP47Client {
   }
 
   /**
-   * Returns the owner of specific token.
+   * Returns the owner of a specific token.
    *
-   * @param tokenId String an Id of a token that you want to check.
+   * @param tokenId String an ID of a token.
    *
-   * @returns String containing the prefixed account-hash of account owning this specific token.
+   * @returns String containing the prefixed account hash of the account owning this specific token.
    */
   public async getOwnerOf(tokenId: string) {
     const result = await this.contractClient
@@ -227,9 +227,9 @@ export class CEP47Client {
   }
 
   /**
-   * Returns the meta of specific token.
+   * Returns the metadata of a specific token.
    *
-   * @param tokenId String an Id of a token that you want to check.
+   * @param tokenId String an ID of a token.
    *
    * @returns Map containing all the metadata related to this specific token.
    */
@@ -243,12 +243,12 @@ export class CEP47Client {
   }
 
   /**
-   * Returns the tokenId of specific token assigned to an account queried by index.
+   * Returns the tokenId of a specific token assigned to an account and queried by index.
    *
-   * @param owner CLPublicKey of owner that you want to check.
-   * @param index String which represents an index you want to check
+   * @param owner CLPublicKey of the token owner.
+   * @param index String which represents the token index.
    *
-   * @returns String Id of a token.
+   * @returns String ID of a token.
    */
   public async getTokenByIndex(owner: CLPublicKey, index: string) {
     const hex = keyAndValueToHex(CLValueBuilder.key(owner), CLValueBuilder.u256(index));
@@ -260,12 +260,12 @@ export class CEP47Client {
   }
 
   /**
-   * Returns the index of specific token assigned to an account queried by id.
+   * Returns the index of a specific token assigned to an account and queried by ID.
    *
-   * @param owner CLPublicKey of owner that you want to check.
-   * @param tokenId String which represents tokenId you want to check
+   * @param owner CLPublicKey of the token owner.
+   * @param tokenId String which represents the tokenId.
    *
-   * @returns String index of a token at this specific account.
+   * @returns String index of a token for this specific account.
    */
   public async getIndexByToken(
     owner: CLKeyParameters,
@@ -280,12 +280,12 @@ export class CEP47Client {
   }
 
   /**
-   * Returns the allowance that is related with a specific token.
+   * Returns the allowance related with a specific token.
    *
-   * @param owner CLPublicKey of owner of a token.
-   * @param tokenId String which represents tokenId you want to check
+   * @param owner CLPublicKey of the owner of a token.
+   * @param tokenId String which represents tokenId.
    *
-   * @returns String containing the prefixed account-hash of account owning this specific token.
+   * @returns String containing the prefixed account hash of the account owning this token.
    */
   public async getAllowance(
     owner: CLKeyParameters,
