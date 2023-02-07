@@ -123,9 +123,9 @@ export class CEP47Client {
    *
    * @param wasm Uin8Array with contents of the WASM file.
    * @param args CEP47 installation args (see CEP47InstallArgs).
-   * @param paymentAmount The payment amount that will be used for this deploy.
+   * @param paymentAmount The payment amount that will be used for this Deploy.
    * @param deploySender The PublicKey of the Deploy sender.
-   * @param keys Optional parameter containing a list of keys that can be used to sign the deploy.
+   * @param keys Optional parameter containing a list of keys that can be used to sign the Deploy.
    *
    * @returns Deploy that can be signed and sent to the network. 
    */
@@ -301,6 +301,17 @@ export class CEP47Client {
     )}`;
   }
 
+  /**
+   * Gives another account the right to spend tokens from this account.
+   *
+   * @param spender The account that can spend tokens from the owner account.
+   * @param ids The token IDs that can be spent.
+   * @param paymentAmount The payment amount that will be used for this Deploy.
+   * @param deploySender The PublicKey of the Deploy sender.
+   * @param keys Optional parameter containing a list of keys that can be used to sign the Deploy.
+   *
+   * @returns The Deploy that can be sent to the network.
+   */
   public async approve(
     spender: CLKeyParameters,
     ids: string[],
@@ -323,6 +334,18 @@ export class CEP47Client {
     );
   }
 
+  /**
+   * Creates new tokens for a specific recipient, given the token IDs and their metadata, paired in order.
+   *
+   * @param recipient The account for which tokens will be minted.
+   * @param ids The token IDs that will be minted for this account.
+   * @param metas The corresponding metadata for each minted token.
+   * @param paymentAmount The payment amount that will be used for this Deploy.
+   * @param deploySender The PublicKey of the Deploy sender.
+   * @param keys Optional parameter containing a list of keys that can be used to sign the Deploy.
+   *
+   * @returns The Deploy that can be sent to the network.
+   */
   public async mint(
     recipient: CLKeyParameters,
     ids: string[],
@@ -347,6 +370,19 @@ export class CEP47Client {
     );
   }
 
+  /**
+   * Creates several new tokens with specific IDs but with the same metadata.
+   *
+   * @param recipient The account for which tokens will be minted.
+   * @param ids The token IDs that will be minted for this account.
+   * @param meta The metadata that will be used for each minted token.
+   * @param count Number of tokens to be minted.
+   * @param paymentAmount The payment amount that will be used for this Deploy.
+   * @param deploySender The PublicKey of the Deploy sender.
+   * @param keys Optional parameter containing a list of keys that can be used to sign the Deploy.
+   *
+   * @returns The Deploy that can be sent to the network.
+   */
   public async mintCopies(
     recipient: CLKeyParameters,
     ids: string[],
@@ -373,6 +409,17 @@ export class CEP47Client {
     );
   }
 
+  /**
+   * Destroys the given tokens for the account specified.
+   *
+   * @param owner The account for which tokens will be burned.
+   * @param ids Token IDs that will be burned for this account.
+   * @param paymentAmount The payment amount that will be used for this Deploy.
+   * @param deploySender The PublicKey of the Deploy sender.
+   * @param keys Optional parameter containing a list of keys that can be used to sign the Deploy.
+   *
+   * @returns The Deploy that can be sent to the network.
+   */
   public async burn(
     owner: CLKeyParameters,
     ids: string[],
@@ -395,6 +442,18 @@ export class CEP47Client {
     );
   }
 
+  /**
+   * Transfers tokens from a given account to another account.
+   *
+   * @param recipient The account that will receive tokens from the token owner.
+   * @param owner The account that owns the tokens to be transferred.
+   * @param ids Token IDs that will be transferred to the recipient.
+   * @param paymentAmount The payment amount that will be used for this Deploy.
+   * @param deploySender The PublicKey of the Deploy sender.
+   * @param keys Optional parameter containing a list of keys that can be used to sign the Deploy.
+   *
+   * @returns The Deploy that can be sent to the network.
+   */
   public async transferFrom(
     recipient: CLKeyParameters,
     owner: CLKeyParameters,
@@ -419,6 +478,17 @@ export class CEP47Client {
     );
   }
 
+  /**
+   * Transfers tokens from the caller's account to another account.
+   *
+   * @param recipient The account that will receive the tokens transferred from the caller.
+   * @param ids Token IDs that will be transferred.
+   * @param paymentAmount The payment amount that will be used for this Deploy.
+   * @param deploySender The PublicKey of the Deploy sender.
+   * @param keys Optional parameter containing a list of keys that can be used to sign the Deploy.
+   *
+   * @returns The Deploy that can be sent to the network.
+   */
   public async transfer(
     recipient: CLKeyParameters,
     ids: string[],
@@ -441,6 +511,17 @@ export class CEP47Client {
     );
   }
 
+   /**
+   * Updates the metadata of a token.
+   *
+   * @param id The ID of the token to be updated.
+   * @param meta The new metadata for the token specified.
+   * @param paymentAmount The payment amount that will be used for this Deploy.
+   * @param deploySender The PublicKey of the Deploy sender.
+   * @param keys Optional parameter containing a list of keys that can be used to sign the Deploy.
+   *
+   * @returns The Deploy that can be sent to the network.
+   */
   public async updateTokenMeta(
     id: string,
     meta: Map<string, string>,
