@@ -1,6 +1,6 @@
 # `casper-erc20-js-client`
 
-This JavaScript client gives you an easy way to install and interact with the Casper ERC-20 contract.
+This JavaScript client gives you an easy way to install and interact with the [Casper ERC-20](https://github.com/casper-ecosystem/erc20) contract.
 
 ## Installation
 

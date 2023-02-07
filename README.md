@@ -1,8 +1,8 @@
 # casper-contracts-js-clients
 
 This project contains a library that will help you create clients for Casper contracts and a few implementations of such clients dedicated to interacting with smart contracts on Casper. You will find these clients published in `npm`:
-- A Casper CEP-47 (NFT) client in JavaScript: [casper-cep47-js-client](https://www.npmjs.com/package/casper-cep47-js-client)
-- A Casper ERC-20 client in JavaScript: [casper-erc20-js-client](https://www.npmjs.com/package/casper-erc20-js-client)
+- A [Casper CEP-47 (NFT)](https://github.com/casper-ecosystem/casper-nft-cep47) client in JavaScript: [casper-cep47-js-client](https://www.npmjs.com/package/casper-cep47-js-client)
+- A [Casper ERC-20](https://github.com/casper-ecosystem/erc20) client in JavaScript: [casper-erc20-js-client](https://www.npmjs.com/package/casper-erc20-js-client)
 
 Also, we provide a toolkit that you can use to write your contract clients: 
 - A JavaScript client helper library: [casper-js-client-helper](https://www.npmjs.com/package/casper-js-client-helper)
