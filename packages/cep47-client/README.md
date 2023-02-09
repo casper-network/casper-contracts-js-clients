@@ -1,6 +1,6 @@
 # `casper-cep47-js-client`
 
-This client gives you an easy way to install and interact with the Casper CEP-47 (NFT) smart contract.
+This client gives you an easy way to install and interact with the [Casper CEP-47 (NFT)](https://github.com/casper-ecosystem/casper-nft-cep47) smart contract.
 
 ## Installation
 

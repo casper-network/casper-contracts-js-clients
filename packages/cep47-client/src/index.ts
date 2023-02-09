@@ -17,6 +17,14 @@ import blake from "blakejs";
 
 const { Contract, toCLMap, fromCLMap } = Contracts;
 
+/**
+  * CEP47 installation parameters.
+  *
+  * @param name Name of the token.
+  * @param contractName Name of the contract.
+  * @param symbol Symbol of the token.
+  * @param meta A Map built with Strings containing contract metadata.
+  */
 export interface CEP47InstallArgs {
   name: string,
   contractName: string,
@@ -24,6 +32,9 @@ export interface CEP47InstallArgs {
   meta: Map<string, string>
 };
 
+/**
+  * CEP47 possible events.
+  */
 export enum CEP47Events {
   MintOne = "cep47_mint_one",
   TransferToken = "cep47_transfer_token",
@@ -32,6 +43,16 @@ export enum CEP47Events {
   ApproveToken = 'cep47_approve_token'
 }
 
+/**
+  * CEP47 event parser.
+  * It can be used with the `EventStream` from the `casper-js-sdk`.
+  *
+  * @param params Object containing a contractPackageHash (prefixed with "hash-") and eventNames (a list of CEP47Events).
+  * @param value A data object returned by the EventStream.
+  *
+  * @returns Object containing { error: boolean, success: boolean, data: Object }.
+  * If success is set to true, the data object contains a list of parsed events.
+  */
 export const CEP47EventParser = (
   {
     contractPackageHash,
@@ -60,8 +81,8 @@ export const CEP47EventParser = (
               const event = (clValue as CLMap<CLValue, CLValue>).get(CLValueBuilder.string("event_type"));
               if (
                 hash &&
-                // NOTE: Calling toLowerCase() because current JS-SDK doesn't support checksumed hashes and returns all lower case value
-                // Remove it after updating SDK
+                // NOTE: Calling toLowerCase() because currently the JS-SDK doesn't support checksumed hashes and returns all lower-case values
+                // Remove it after updating the SDK
                 hash.value() === contractPackageHash.slice(5).toLowerCase() &&
                 event &&
                 eventNames.includes(event.value())
@@ -98,6 +119,17 @@ export class CEP47Client {
     this.contractClient = new Contract(this.casperClient);
   }
 
+  /**
+   * Installs the CEP47 contract.
+   *
+   * @param wasm Uin8Array with contents of the WASM file.
+   * @param args CEP47 installation args (see CEP47InstallArgs).
+   * @param paymentAmount The payment amount that will be used for this Deploy.
+   * @param deploySender The PublicKey of the Deploy sender.
+   * @param keys Optional parameter containing a list of keys that can be used to sign the Deploy.
+   *
+   * @returns Deploy that can be signed and sent to the network. 
+   */
   public install(
     wasm: Uint8Array,
     args: CEP47InstallArgs,
@@ -115,26 +147,59 @@ export class CEP47Client {
     return this.contractClient.install(wasm, runtimeArgs, paymentAmount, deploySender, this.networkName, keys || []);
   }
 
+  /**
+   * Sets the contract hash of a client.
+   *
+   * @param contractHash Contract hash.
+   * @param contractPackageHash Contract package hash.
+   */
   public setContractHash(contractHash: string, contractPackageHash?: string) {
     this.contractClient.setContractHash(contractHash, contractPackageHash);
   }
   
+  /**
+   * Returns the contract name.
+   *
+   * @returns String
+   */
   public async name() {
     return this.contractClient.queryContractData(['name']);
   }
 
+  /**
+   * Returns the contract symbol. 
+   *
+   * @returns String
+   */
   public async symbol() {
     return this.contractClient.queryContractData(['symbol']);
   }
 
+  /**
+   * Returns the contract metadata.
+   *
+   * @returns String
+   */
   public async meta() {
     return this.contractClient.queryContractData(['meta']);
   }
 
+  /**
+   * Returns the contract total supply.
+   *
+   * @returns String
+   */
   public async totalSupply() {
     return this.contractClient.queryContractData(['total_supply']);
   }
   
+  /**
+   * Returns the balance of tokens assigned to specific public key.
+   *
+   * @param account CLPublicKey of the account.
+   *
+   * @returns String containing the number of tokens stored for this account.
+   */
   public async balanceOf(account: CLPublicKey) {
     const result = await this.contractClient
       .queryContractDictionary('balances', account.toAccountHashStr().slice(13));
@@ -144,6 +209,13 @@ export class CEP47Client {
     return maybeValue.value().toString();
   }
 
+  /**
+   * Returns the owner of a specific token.
+   *
+   * @param tokenId String an ID of a token.
+   *
+   * @returns String containing the prefixed account hash of the account owning this specific token.
+   */
   public async getOwnerOf(tokenId: string) {
     const result = await this.contractClient
       .queryContractDictionary('owners', tokenId);
@@ -155,6 +227,13 @@ export class CEP47Client {
     )}`;
   }
 
+  /**
+   * Returns the metadata of a specific token.
+   *
+   * @param tokenId String an ID of a token.
+   *
+   * @returns Map containing all the metadata related to this specific token.
+   */
   public async getTokenMeta(tokenId: string) {
     const result = await this.contractClient
       .queryContractDictionary('metadata', tokenId);
@@ -164,6 +243,14 @@ export class CEP47Client {
     return fromCLMap(maybeValue);
   }
 
+  /**
+   * Returns the tokenId of a specific token assigned to an account and queried by index.
+   *
+   * @param owner CLPublicKey of the token owner.
+   * @param index String which represents the token index.
+   *
+   * @returns String ID of a token.
+   */
   public async getTokenByIndex(owner: CLPublicKey, index: string) {
     const hex = keyAndValueToHex(CLValueBuilder.key(owner), CLValueBuilder.u256(index));
     const result = await this.contractClient.queryContractDictionary('owned_tokens_by_index', hex);
@@ -173,6 +260,14 @@ export class CEP47Client {
     return maybeValue.value().toString();
   }
 
+  /**
+   * Returns the index of a specific token assigned to an account and queried by ID.
+   *
+   * @param owner CLPublicKey of the token owner.
+   * @param tokenId String which represents the tokenId.
+   *
+   * @returns String index of a token for this specific account.
+   */
   public async getIndexByToken(
     owner: CLKeyParameters,
     tokenId: string
@@ -185,6 +280,14 @@ export class CEP47Client {
     return maybeValue.value().toString();
   }
 
+  /**
+   * Returns the allowance related with a specific token.
+   *
+   * @param owner CLPublicKey of the owner of a token.
+   * @param tokenId String which represents tokenId.
+   *
+   * @returns String containing the prefixed account hash of the account owning this token.
+   */
   public async getAllowance(
     owner: CLKeyParameters,
     tokenId: string
@@ -199,6 +302,17 @@ export class CEP47Client {
     )}`;
   }
 
+  /**
+   * Gives another account the right to spend tokens from this account.
+   *
+   * @param spender The account that can spend tokens from the owner account.
+   * @param ids The token IDs that can be spent.
+   * @param paymentAmount The payment amount that will be used for this Deploy.
+   * @param deploySender The PublicKey of the Deploy sender.
+   * @param keys Optional parameter containing a list of keys that can be used to sign the Deploy.
+   *
+   * @returns The Deploy that can be sent to the network.
+   */
   public async approve(
     spender: CLKeyParameters,
     ids: string[],
@@ -221,6 +335,18 @@ export class CEP47Client {
     );
   }
 
+  /**
+   * Creates new tokens for a specific recipient, given the token IDs and their metadata, paired in order.
+   *
+   * @param recipient The account for which tokens will be minted.
+   * @param ids The token IDs that will be minted for this account.
+   * @param metas The corresponding metadata for each minted token.
+   * @param paymentAmount The payment amount that will be used for this Deploy.
+   * @param deploySender The PublicKey of the Deploy sender.
+   * @param keys Optional parameter containing a list of keys that can be used to sign the Deploy.
+   *
+   * @returns The Deploy that can be sent to the network.
+   */
   public async mint(
     recipient: CLKeyParameters,
     ids: string[],
@@ -245,6 +371,19 @@ export class CEP47Client {
     );
   }
 
+  /**
+   * Creates several new tokens with specific IDs but with the same metadata.
+   *
+   * @param recipient The account for which tokens will be minted.
+   * @param ids The token IDs that will be minted for this account.
+   * @param meta The metadata that will be used for each minted token.
+   * @param count Number of tokens to be minted.
+   * @param paymentAmount The payment amount that will be used for this Deploy.
+   * @param deploySender The PublicKey of the Deploy sender.
+   * @param keys Optional parameter containing a list of keys that can be used to sign the Deploy.
+   *
+   * @returns The Deploy that can be sent to the network.
+   */
   public async mintCopies(
     recipient: CLKeyParameters,
     ids: string[],
@@ -271,6 +410,17 @@ export class CEP47Client {
     );
   }
 
+  /**
+   * Destroys the given tokens for the account specified.
+   *
+   * @param owner The account for which tokens will be burned.
+   * @param ids Token IDs that will be burned for this account.
+   * @param paymentAmount The payment amount that will be used for this Deploy.
+   * @param deploySender The PublicKey of the Deploy sender.
+   * @param keys Optional parameter containing a list of keys that can be used to sign the Deploy.
+   *
+   * @returns The Deploy that can be sent to the network.
+   */
   public async burn(
     owner: CLKeyParameters,
     ids: string[],
@@ -293,6 +443,18 @@ export class CEP47Client {
     );
   }
 
+  /**
+   * Transfers tokens from a given account to another account.
+   *
+   * @param recipient The account that will receive tokens from the token owner.
+   * @param owner The account that owns the tokens to be transferred.
+   * @param ids Token IDs that will be transferred to the recipient.
+   * @param paymentAmount The payment amount that will be used for this Deploy.
+   * @param deploySender The PublicKey of the Deploy sender.
+   * @param keys Optional parameter containing a list of keys that can be used to sign the Deploy.
+   *
+   * @returns The Deploy that can be sent to the network.
+   */
   public async transferFrom(
     recipient: CLKeyParameters,
     owner: CLKeyParameters,
@@ -317,6 +479,17 @@ export class CEP47Client {
     );
   }
 
+  /**
+   * Transfers tokens from the caller's account to another account.
+   *
+   * @param recipient The account that will receive the tokens transferred from the caller.
+   * @param ids Token IDs that will be transferred.
+   * @param paymentAmount The payment amount that will be used for this Deploy.
+   * @param deploySender The PublicKey of the Deploy sender.
+   * @param keys Optional parameter containing a list of keys that can be used to sign the Deploy.
+   *
+   * @returns The Deploy that can be sent to the network.
+   */
   public async transfer(
     recipient: CLKeyParameters,
     ids: string[],
@@ -339,6 +512,17 @@ export class CEP47Client {
     );
   }
 
+   /**
+   * Updates the metadata of a token.
+   *
+   * @param id The ID of the token to be updated.
+   * @param meta The new metadata for the token specified.
+   * @param paymentAmount The payment amount that will be used for this Deploy.
+   * @param deploySender The PublicKey of the Deploy sender.
+   * @param keys Optional parameter containing a list of keys that can be used to sign the Deploy.
+   *
+   * @returns The Deploy that can be sent to the network.
+   */
   public async updateTokenMeta(
     id: string,
     meta: Map<string, string>,
