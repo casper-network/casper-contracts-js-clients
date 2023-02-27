@@ -49,7 +49,7 @@ const test = async () => {
     CHAIN_NAME!
   );
 
-  const installDeployHash = await cep47.install(
+  const installDeployHash = cep47.install(
     getBinary(WASM_PATH!),
     {
       name: TOKEN_NAME!,
