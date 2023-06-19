@@ -1,12 +1,10 @@
 # casper-contracts-js-clients
 
 This project contains a library that will help you create clients for Casper contracts and a few implementations of such clients dedicated to interacting with smart contracts on Casper. You will find these clients published in `npm`:
+
 - A [Casper CEP-47 (NFT)](https://github.com/casper-ecosystem/casper-nft-cep47) client in JavaScript: [casper-cep47-js-client](https://www.npmjs.com/package/casper-cep47-js-client)
-- A [Casper ERC-20](https://github.com/casper-ecosystem/erc20) client in JavaScript: [casper-erc20-js-client](https://www.npmjs.com/package/casper-erc20-js-client)
 
-Also, we provide a toolkit that you can use to write your contract clients: 
-- A JavaScript client helper library: [casper-js-client-helper](https://www.npmjs.com/package/casper-js-client-helper)
-
+> Looking for CEP-18(ERC20) client? Please check [here](https://github.com/casper-ecosystem/cep18/tree/master/client-js)
 
 ## Usage examples
 
@@ -15,33 +13,11 @@ In this project, you will find end-to-end (e2e) tests, which you can also use as
 Before running an e2e test, run `npm i' inside the project's root directory:
 
 ```
-cd casper-erc20-js-client
+cd packages/cep47-js-client
 npm i
 npm run bootstrap
 npm run dist
 ```
-
-### ERC-20 client usage
-
-Before running this example client, you must specify all the environment variables in the `.env.erc20` file. If you need help, reference the `.env.erc20.example` file.
-
-**Steps:**
-
-- Open the [ERC-20 client example](packages/erc20-client)
-- Set the environment variables in the `.env.erc20` file
-- Run the [install script](e2e/erc20/install.ts) 
-- View the [client usage example](e2e/erc20/installed.ts)
-- Install the contract:
-
-    ```
-    npm run e2e:erc20:install
-    ```
-
-- Run the test example:
-
-    ```
-    npm run e2e:erc20:installed
-    ```
 
 ### CEP-47 client usage
 
@@ -51,16 +27,16 @@ Before running this example client, you must specify all the environment variabl
 
 - Open the [CEP-47 client example](packages/cep47-client)
 - Set the environment variables in the `.env.cep47` file
-- Run the [install script](e2e/cep47/install.ts) 
+- Run the [install script](e2e/cep47/install.ts)
 - View the [client usage example](e2e/cep47/usage.ts)
 - Install the contract:
 
-    ```
-    npm run e2e:cep47:install
-    ```
+  ```
+  npm run e2e:cep47:install
+  ```
 
 - Run the test example:
 
-    ```
-    npm run e2e:cep47:usage
-    ```
+  ```
+  npm run e2e:cep47:usage
+  ```

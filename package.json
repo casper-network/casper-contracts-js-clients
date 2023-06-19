@@ -13,16 +13,13 @@
     "dist": "lerna run dist --include-dependencies",
     "publish:ci": "lerna publish from-package --yes --no-verify-access",
     "e2e:cep47:install": "ts-node ./e2e/cep47/install.ts",
-    "e2e:cep47:usage": "ts-node ./e2e/cep47/usage.ts",
-    "e2e:erc20:install": "ts-node ./e2e/erc20/install.ts",
-    "e2e:erc20:installed": "ts-node ./e2e/erc20/installed.ts"
+    "e2e:cep47:usage": "ts-node ./e2e/cep47/usage.ts"
   },
   "keywords": [],
   "author": "Jan Hoffmann <jan@casperlabs.io>",
   "license": "ISC",
   "dependencies": {
     "casper-cep47-js-client": "file:./packages/cep47-client",
-    "casper-erc20-js-client": "file:./packages/erc20-client",
     "casper-js-client-helper": "file:./packages/client-helper",
     "casper-js-sdk": "2.10.2",
     "ts-node": "^10.2.1"
