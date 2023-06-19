@@ -6,10 +6,6 @@ This project contains a library that will help you create clients for Casper con
 
 > Looking for CEP-18(ERC20) client? Please check [here](https://github.com/casper-ecosystem/cep18/tree/master/client-js)
 
-Also, we provide a toolkit that you can use to write your contract clients:
-
-- A JavaScript client helper library: [casper-js-client-helper](https://www.npmjs.com/package/casper-js-client-helper)
-
 ## Usage examples
 
 In this project, you will find end-to-end (e2e) tests, which you can also use as examples of interacting and using the contracts. The tests are well documented and can give you an overview of all contract functionality.
