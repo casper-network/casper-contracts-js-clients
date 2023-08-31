@@ -20,7 +20,6 @@
   "license": "ISC",
   "dependencies": {
     "casper-cep47-js-client": "file:./packages/cep47-client",
-    "casper-js-client-helper": "file:./packages/client-helper",
     "casper-js-sdk": "2.10.2",
     "ts-node": "^10.2.1"
   }
